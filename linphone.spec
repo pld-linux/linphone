@@ -20,7 +20,7 @@ URL:		http://www.linphone.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	ffmpeg-devel >= 0.4.5
-BuildRequires:	gnome-common
+BuildRequires:	gnome-common >= 2.8.0
 BuildRequires:	gnome-panel-devel
 BuildRequires:	gtk-doc
 BuildRequires:	libgnomeui-devel
@@ -101,7 +101,7 @@ rm -f missing
 # gettext 0.11.5 used
 #%%{__gettextize}
 %{__libtoolize}
-%{__aclocal} -I /usr/share/aclocal/gnome2-macros
+%{__aclocal}
 %{__autoconf}
 %{__automake}
 cd oRTP
