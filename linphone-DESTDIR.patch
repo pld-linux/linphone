@@ -1,0 +1,64 @@
+diff -durN linphone-0.7.1.orig/Makefile.am linphone-0.7.1/Makefile.am
+--- linphone-0.7.1.orig/Makefile.am	Thu Jan 17 08:25:05 2002
++++ linphone-0.7.1/Makefile.am	Mon Apr 15 19:17:37 2002
+@@ -7,10 +7,10 @@
+ install-data-local:
+ 	@$(NORMAL_INSTALL)
+ 	if test -d $(srcdir)/pixmaps; then \
+-	  $(mkinstalldirs) $(PIXDESTDIR)@PACKAGE_PIXMAPS_DIR@; \
++	  $(mkinstalldirs) $(DESTDIR)@PACKAGE_PIXMAPS_DIR@; \
+ 	  for pixmap in $(srcdir)/pixmaps/*; do \
+ 	    if test -f $$pixmap; then \
+-	      $(INSTALL_DATA) $$pixmap $(PIXDESTDIR)@PACKAGE_PIXMAPS_DIR@; \
++	      $(INSTALL_DATA) $$pixmap $(DESTDIR)@PACKAGE_PIXMAPS_DIR@; \
+ 	    fi \
+ 	  done \
+ 	fi
+diff -durN linphone-0.7.1.orig/share/C/Makefile.am linphone-0.7.1/share/C/Makefile.am
+--- linphone-0.7.1.orig/share/C/Makefile.am	Wed Nov 28 23:27:47 2001
++++ linphone-0.7.1/share/C/Makefile.am	Mon Apr 15 19:17:59 2002
+@@ -11,9 +11,9 @@
+ 	cd manual; ln -sf t1.html index.html
+ 
+ install-data-local:
+-			$(mkinstalldirs) $(linphone_manualdir)
+-			cp -rf $(linphone_help) $(linphone_manualdir)/.
++			$(mkinstalldirs) $(DESTDIR)$(linphone_manualdir)
++			cp -rf $(linphone_help) $(DESTDIR)$(linphone_manualdir)/.
+ 
+ uninstall-local:
+-			rm -rf $(linphone_manualdir)
++			rm -rf $(DESTDIR)$(linphone_manualdir)
+ 
+diff -durN linphone-0.7.1.orig/share/fr/Makefile.am linphone-0.7.1/share/fr/Makefile.am
+--- linphone-0.7.1.orig/share/fr/Makefile.am	Wed Nov 28 23:27:47 2001
++++ linphone-0.7.1/share/fr/Makefile.am	Mon Apr 15 19:18:14 2002
+@@ -11,9 +11,9 @@
+ 	cd manual; ln -sf t1.html index.html
+ 
+ install-data-local:
+-			$(mkinstalldirs) $(linphone_manualdir)
+-			cp -rf $(linphone_help) $(linphone_manualdir)/.
++			$(mkinstalldirs) $(DESTDIR)$(linphone_manualdir)
++			cp -rf $(linphone_help) $(DESTDIR)$(linphone_manualdir)/.
+ 
+ uninstall-local:
+-			rm -rf $(linphone_manualdir)
++			rm -rf $(DESTDIR)$(linphone_manualdir)
+ 
+diff -durN linphone-0.7.1.orig/share/it/Makefile.am linphone-0.7.1/share/it/Makefile.am
+--- linphone-0.7.1.orig/share/it/Makefile.am	Thu Jan 17 08:31:31 2002
++++ linphone-0.7.1/share/it/Makefile.am	Mon Apr 15 19:18:28 2002
+@@ -11,9 +11,9 @@
+ 	cd manual; ln -sf t1.html index.html
+ 
+ install-data-local:
+-			$(mkinstalldirs) $(linphone_manualdir)
+-			cp -rf $(linphone_help) $(linphone_manualdir)/.
++			$(mkinstalldirs) $(DESTDIR)$(linphone_manualdir)
++			cp -rf $(linphone_help) $(DESTDIR)$(linphone_manualdir)/.
+ 
+ uninstall-local:
+-			rm -rf $(linphone_manualdir)
++			rm -rf $(DESTDIR)$(linphone_manualdir)
+ 
