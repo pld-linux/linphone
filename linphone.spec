@@ -51,10 +51,10 @@ G³ówne cechy linphone:
  - ma dokumentacjê: pe³ny podrêcznik dostêpny z aplikacji.
 
 %package devel
-Summary:        Linphone Internet Phone
-Summary(pl):    Linphone - telefon internetowy
-Group:          Development/Libraries
-Requires:       %{name} = %{version}
+Summary:	Linphone Internet Phone
+Summary(pl):	Linphone - telefon internetowy
+Group:		Development/Libraries
+Requires:	%{name} = %{version}
 
 %description devel
 Development files for the Linphone Internet Phone.
