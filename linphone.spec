@@ -20,7 +20,9 @@ URL:		http://www.linphone.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	ffmpeg-devel >= 0.4.5
+BuildRequires:	gnome-common
 BuildRequires:	gnome-panel-devel
+BuildRequires:	gtk-doc
 BuildRequires:	libgnomeui-devel
 BuildRequires:	libgsm-devel >= 1.0.10
 BuildRequires:	libosip-devel >= 0.9.7
@@ -29,7 +31,6 @@ BuildRequires:	lpc10-devel >= 1.5
 BuildRequires:	scrollkeeper
 BuildRequires:	speex-devel >= 1.0.0
 BuildRequires:	xft-devel
-BuildRequires:	gtk-doc
 Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	/usr/bin/scrollkeeper-update
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
