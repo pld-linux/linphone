@@ -8,6 +8,7 @@ Release:	1
 License:	LGPL/GPL
 Group:		Applications/Communications
 Source0:	http://savannah.gnu.org/download/%{name}/%{version}/sources/%{name}-%{version}.tar.gz
+# Source0-md5:	0c8e94039b5c6b772672f533c54816fe
 Patch0:		%{name}-DESTDIR.patch
 URL:		http://www.linphone.org/
 BuildRequires:	autoconf
