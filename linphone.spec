@@ -8,7 +8,7 @@ Summary:	Linphone Internet Phone
 Summary(pl):	Linphone - telefon internetowy
 Name:		linphone
 Version:	0.12.0
-Release:	0.1
+Release:	0.2
 License:	LGPL/GPL
 Group:		Applications/Communications
 Source0:	http://simon.morlat.free.fr/download/%{version}/source/%{name}-%{version}.tar.gz
@@ -131,6 +131,9 @@ install -d $RPM_BUILD_ROOT%{_applnkdir}/Network/Communications \
 install share/linphone.desktop $RPM_BUILD_ROOT%{_applnkdir}/Network/Communications
 install share/linphone.gnorba $RPM_BUILD_ROOT%{_sysconfdir}/CORBA/servers
 install pixmaps/*.png pixmaps/*.xpm $RPM_BUILD_ROOT%{_pixmapsdir}
+
+rm -f $RPM_BUILD_ROOT%{_includedir}/speex*
+rm -f $RPM_BUILD_ROOT%{_libdir}/libspeex*
 
 %find_lang %{name} --with-gnome --all-name
 
