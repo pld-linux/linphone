@@ -1,0 +1,14 @@
+diff -Naur linphone-0.11.0.orig/acinclude.m4 linphone-0.11.0/acinclude.m4
+--- linphone-0.11.0.orig/acinclude.m4	Thu Jan  1 01:00:00 1970
++++ linphone-0.11.0/acinclude.m4	Fri Jun 27 01:17:21 2003
+@@ -0,0 +1,10 @@
++dnl AM_ACLOCAL_INCLUDE(macrodir)
++AC_DEFUN([AM_ACLOCAL_INCLUDE],
++[ 
++        AM_CONDITIONAL(INSIDE_GNOME_COMMON, false)
++
++        test -n "$ACLOCAL_FLAGS" && ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
++
++        for k in $1 ; do ACLOCAL="$ACLOCAL -I $k" ; done
++])
++
