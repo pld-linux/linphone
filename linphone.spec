@@ -1,5 +1,5 @@
-#
 Summary:	Linphone Internet Phone
+Summary(pl):	Linphone - telefon internetowy
 Name:		linphone
 Version:	0.7.1
 Release:	1
@@ -37,6 +37,18 @@ Here are the main features of linphone:
       Licence.
     - Linphone is documented: there is a complete user manual readable
       from the application that explains you all you need to know.
+
+%description -l pl
+Linphone to telefon internetowy - pozwala dzwoniæ do znajomych na
+ca³ym ¶wiecie bez dodatkowych op³at, u¿ywaj±c tylko Internetu.
+
+G³ówne cechy linphone:
+ - dzia³anie ze ¶rodowiskiem GNOME
+ - na¶ladowanie prostego telefonu komórkowego - tylko dwa przyciski
+ - obs³uga protoko³u SIP
+ - wymaga karty d¼wiêkowej
+ - jest wolnodostêpnym oprogramowaniem (na licencji GPL)
+ - ma dokumentacjê: pe³ny podrêcznik dostêpny z aplikacji.
 
 %prep
 %setup -q
@@ -76,6 +88,7 @@ gzip -9nf AUTHORS BUGS ChangeLog NEWS
 %post
 /usr/bin/scrollkeeper-update
 /sbin/ldconfig
+
 %postun
 /usr/bin/scrollkeeper-update
 /sbin/ldconfig
