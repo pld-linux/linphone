@@ -84,7 +84,7 @@ Statyczne wersje bibliotek Linphone.
 %build
 rm -f missing
 # gettext 0.11.5 used
-#%{__gettextize}
+#%%{__gettextize}
 %{__libtoolize}
 %{__aclocal} -I macros -I m4
 %{__autoconf}
