@@ -43,7 +43,7 @@ the whole world, freely, simply by using the internet. The cost of the
 phone call is the cost that you spend connected to the internet.
 
 Here are the main features of linphone:
-    - Works with the Gnome Desktop under linux.
+    - Works with the GNOME Desktop under linux.
     - Works as simply as a cellular phone. Two buttons, no more.
     - Understands the SIP protocol.
     - You just require a soundcard to use linphone.
