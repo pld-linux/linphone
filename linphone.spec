@@ -1,15 +1,15 @@
 Summary:	Linphone Internet Phone
 Summary(pl):	Linphone - telefon internetowy
 Name:		linphone
-Version:	0.9.0
+Version:	0.9.1
 Release:	1
 License:	GPL v2
 Group:		Applications/Communications
-Source0:	http://www.linphone.org/download/%{name}-%{version}.tar.gz
+Source0:	http://savannah.gnu.org/download/%{name}/%{version}/sources/%{name}-%{version}.tar.gz
 Patch0:		%{name}-DESTDIR.patch
 URL:		http://www.linphone.org/
-#BuildRequires:	autoconf
-#BuildRequires:	automake
+BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	gnome-libs-devel
 BuildRequires:	gnome-core-devel
 BuildRequires:	libosip-devel
@@ -69,19 +69,26 @@ Pliki dla programistów u¿ywaj±cych Linphone - telefon internetowy.
 %build
 sed -e s/AM_GNOME_GETTEXT/AM_GNU_GETTEXT/ configure.in > configure.in.tmp
 mv -f configure.in.tmp configure.in
-#rm -f missing
+rm -f missing
 #xml-i18n-toolize --copy --force
 #%{__gettextize}
-#%{__aclocal} -I %{_aclocaldir}/gnome
-#autoheader
-#%{__autoconf}
-#%{__automake}
-#cd oRTP
-#autoheader
-#%{__autoconf}
-#%{__automake}
-#cd ..
-%configure2_13
+%{__libtoolize}
+#%{__aclocal} -I macros
+%{__autoconf}
+%{__automake}
+cd oRTP
+	rm -rf ltmain.sh missing
+	ln -sf ../ltmain.sh ltmain.sh
+	%{__libtoolize} 
+	%{__aclocal}
+	%{__autoconf}
+	%{__automake}
+cd ..
+cd speex
+	%{__autoconf}
+	%{__automake}
+cd ..
+%configure
 
 %{__make}
 
@@ -93,8 +100,8 @@ rm -rf $RPM_BUILD_ROOT
 	linphone_sysdir=%{_sysconfdir}/CORBA/servers \
 	linphone_applidir=%{_applnkdir}/Network/Communications
 
-install mediastreamer/.libs/libmediastreamer.{so.0.0.0U,la,a} $RPM_BUILD_ROOT%{_libdir}
-install mediastreamer/.libs/libmsspeex.{so.0.0.0U,la,a} $RPM_BUILD_ROOT%{_libdir}
+#install mediastreamer/.libs/libmediastreamer.{so.0.0.0U,la,a} $RPM_BUILD_ROOT%{_libdir}
+#install mediastreamer/.libs/libmsspeex.{so.0.0.0U,la,a} $RPM_BUILD_ROOT%{_libdir}
 
 %find_lang %{name} --with-gnome --all-name
 
@@ -121,6 +128,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/sounds/*
 %{_datadir}/linphonec
 %{_datadir}/gtk-doc/html
+#%{_mandir}/man1/*.1*
 
 %files devel
 %defattr(644,root,root,755)
