@@ -7,13 +7,13 @@
 Summary:	Linphone Internet Phone
 Summary(pl):	Linphone - telefon internetowy
 Name:		linphone
-Version:	0.12.0
+Version:	1.0.1
 Release:	0.2
 License:	LGPL/GPL
 Group:		Applications/Communications
-Source0:	http://simon.morlat.free.fr/download/%{version}/source/%{name}-%{version}.tar.gz
-# Source0-md5:	79abbdcbec4c59cdd28a2722fe333b6e
-Patch0:		%{name}-DESTDIR.patch
+Source0:	http://simon.morlat.free.fr/download/1.0.x/source/%{name}-%{version}.tar.gz
+# Source0-md5:	d65f977dd6512b7725fcb2e2c9713e65
+#Patch0:		%{name}-DESTDIR.patch
 Patch1:		%{name}-automake.patch
 #Patch2:		%{name}-system-libs.patch
 URL:		http://www.linphone.org/
@@ -92,7 +92,7 @@ Statyczne wersje bibliotek Linphone.
 
 %prep
 %setup -q
-%patch0 -p1
+#%patch0 -p1
 %patch1 -p1
 #%patch2 -p1
 
@@ -101,7 +101,7 @@ rm -f missing
 # gettext 0.11.5 used
 #%%{__gettextize}
 %{__libtoolize}
-%{__aclocal}
+%{__aclocal} -I m4
 %{__autoconf}
 %{__automake}
 cd oRTP
@@ -120,7 +120,7 @@ cd ..
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_applnkdir}/Network/Communications \
+install -d $RPM_BUILD_ROOT%{_desktopdir} \
 	$RPM_BUILD_ROOT%{_sysconfdir}/CORBA/servers \
 	$RPM_BUILD_ROOT%{_pixmapsdir}
 
@@ -128,7 +128,7 @@ install -d $RPM_BUILD_ROOT%{_applnkdir}/Network/Communications \
 	DESTDIR=$RPM_BUILD_ROOT \
 	HTML_DIR=%{_gtkdocdir}
 
-install share/linphone.desktop $RPM_BUILD_ROOT%{_applnkdir}/Network/Communications
+install share/linphone.desktop $RPM_BUILD_ROOT%{_desktopdir}
 install share/linphone.gnorba $RPM_BUILD_ROOT%{_sysconfdir}/CORBA/servers
 install pixmaps/*.png pixmaps/*.xpm $RPM_BUILD_ROOT%{_pixmapsdir}
 
@@ -154,10 +154,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/CORBA/servers/*
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/lib*.so.*.*
-%{_applnkdir}/Network/Communications/*
+%{_desktopdir}/*
 %{_pixmapsdir}/*
 %{_datadir}/sounds/*
-%{_datadir}/linphonec
 %{_mandir}/man*/*
 %{_libdir}/bonobo/servers/GNOME_LinphoneApplet.server
 %attr(755,root,root) %{_libdir}/linphone_applet
@@ -167,9 +166,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/*.so
 %{_libdir}/*.la
+%{_includedir}/linphone
 %{_includedir}/ortp
-%{_includedir}/osipua
 %{_gtkdocdir}/*
+%{_pkgconfigdir}/*.pc
 
 %files static
 %defattr(644,root,root,755)
