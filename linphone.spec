@@ -8,14 +8,14 @@ Group:		Applications/Communications
 Source0:	http://www.linphone.org/download/%{name}-%{version}.tar.gz
 Patch0:		%{name}-DESTDIR.patch
 URL:		http://www.linphone.org/
-BuildRequires:	autoconf
-BuildRequires:	automake
+#BuildRequires:	autoconf
+#BuildRequires:	automake
 BuildRequires:	gnome-libs-devel
 BuildRequires:	gnome-core-devel
 BuildRequires:	libosip-devel
 BuildRequires:	scrollkeeper
-Prereq:		/sbin/ldconfig
-Prereq:		scrollkeeper
+Requires(post,postun):	/sbin/ldconfig
+Requires(post,postun):	/usr/bin/scrollkeeper
 Requires:	applnk
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -62,7 +62,6 @@ Development files for the Linphone Internet Phone.
 %description devel -l pl
 Pliki dla programistów u¿ywaj±cych Linphone - telefon internetowy.
 
-
 %prep
 %setup -q
 %patch0 -p1
@@ -73,7 +72,7 @@ mv -f configure.in.tmp configure.in
 #rm -f missing
 #xml-i18n-toolize --copy --force
 #%{__gettextize}
-#aclocal -I %{_aclocaldir}/gnome
+#%{__aclocal} -I %{_aclocaldir}/gnome
 #autoheader
 #%{__autoconf}
 #%{__automake}
@@ -126,8 +125,10 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %{_libdir}/*.a
-%{_libdir}/*.so
-%{_libdir}/*.la
+%attr(755,root,root) %{_libdir}/*.so
+%attr(755,root,root) %{_libdir}/*.la
 %{_includedir}/*.h
+%dir %{_includedir}/osipua
 %{_includedir}/osipua/*.h
+%dir %{_includedir}/ortp
 %{_includedir}/ortp/*.h
