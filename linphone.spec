@@ -44,26 +44,26 @@ the whole world, freely, simply by using the internet. The cost of the
 phone call is the cost that you spend connected to the internet.
 
 Here are the main features of linphone:
-    - Works with the GNOME Desktop under linux.
-    - Works as simply as a cellular phone. Two buttons, no more.
-    - Understands the SIP protocol.
-    - You just require a soundcard to use linphone.
-    - Linphone is free software, released under the General Public
-      Licence.
-    - Linphone is documented: there is a complete user manual readable
-      from the application that explains you all you need to know.
+- Works with the GNOME Desktop under linux.
+- Works as simply as a cellular phone. Two buttons, no more.
+- Understands the SIP protocol.
+- You just require a soundcard to use linphone.
+- Linphone is free software, released under the General Public
+  Licence.
+- Linphone is documented: there is a complete user manual readable
+  from the application that explains you all you need to know.
 
 %description -l pl
 Linphone to telefon internetowy - pozwala dzwoniæ do znajomych na
 ca³ym ¶wiecie bez dodatkowych op³at, u¿ywaj±c tylko Internetu.
 
 G³ówne cechy linphone:
- - dzia³anie ze ¶rodowiskiem GNOME
- - na¶ladowanie prostego telefonu komórkowego - tylko dwa przyciski
- - obs³uga protoko³u SIP
- - wymaga karty d¼wiêkowej
- - jest wolnodostêpnym oprogramowaniem (na licencji GPL)
- - ma dokumentacjê: pe³ny podrêcznik dostêpny z aplikacji.
+- dzia³anie ze ¶rodowiskiem GNOME
+- na¶ladowanie prostego telefonu komórkowego - tylko dwa przyciski
+- obs³uga protoko³u SIP
+- wymaga karty d¼wiêkowej
+- jest wolnodostêpnym oprogramowaniem (na licencji GPL)
+- ma dokumentacjê: pe³ny podrêcznik dostêpny z aplikacji.
 
 %package devel
 Summary:	Linphone Internet Phone - header files
