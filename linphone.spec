@@ -20,6 +20,7 @@ URL:		http://www.linphone.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libgnomeui-devel
+BuildRequires:	gnome-panel-devel
 BuildRequires:	XFree86-xrender-devel
 BuildRequires:	libosip-devel >= 0.9.7
 BuildRequires:	libtool >= 1:1.4.2-9
