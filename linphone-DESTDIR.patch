@@ -1,22 +1,22 @@
-diff -durN linphone-0.7.1.orig/Makefile.am linphone-0.7.1/Makefile.am
---- linphone-0.7.1.orig/Makefile.am	Thu Jan 17 08:25:05 2002
-+++ linphone-0.7.1/Makefile.am	Mon Apr 15 19:17:37 2002
-@@ -7,10 +7,10 @@
+diff -Naur linphone-0.11.0/share/C/Makefile.am linphone-0.11.0-p/share/C/Makefile.am
+--- linphone-0.11.0/share/C/Makefile.am	Wed Dec 11 18:16:39 2002
++++ linphone-0.11.0-p/share/C/Makefile.am	Mon Jun 23 11:08:36 2003
+@@ -13,9 +13,9 @@
+ 	cd manual; ln -sf t1.html index.html
+ 
  install-data-local:
- 	@$(NORMAL_INSTALL)
- 	if test -d $(srcdir)/pixmaps; then \
--	  $(mkinstalldirs) $(PIXDESTDIR)@PACKAGE_PIXMAPS_DIR@; \
-+	  $(mkinstalldirs) $(DESTDIR)@PACKAGE_PIXMAPS_DIR@; \
- 	  for pixmap in $(srcdir)/pixmaps/*; do \
- 	    if test -f $$pixmap; then \
--	      $(INSTALL_DATA) $$pixmap $(PIXDESTDIR)@PACKAGE_PIXMAPS_DIR@; \
-+	      $(INSTALL_DATA) $$pixmap $(DESTDIR)@PACKAGE_PIXMAPS_DIR@; \
- 	    fi \
- 	  done \
- 	fi
-diff -durN linphone-0.7.1.orig/share/C/Makefile.am linphone-0.7.1/share/C/Makefile.am
---- linphone-0.7.1.orig/share/C/Makefile.am	Wed Nov 28 23:27:47 2001
-+++ linphone-0.7.1/share/C/Makefile.am	Mon Apr 15 19:17:59 2002
+-			$(mkinstalldirs) $(linphone_manualdir)
+-			cp -rf $(linphone_help) $(linphone_manualdir)/.
++			$(mkinstalldirs) $(DESTDIR)$(linphone_manualdir)
++			cp -rf $(linphone_help) $(DESTDIR)$(linphone_manualdir)/.
+ 
+ uninstall-local:
+-			rm -rf $(linphone_manualdir)
++			rm -rf $(DESTDIR)$(linphone_manualdir)
+ 
+diff -Naur linphone-0.11.0/share/fr/Makefile.am linphone-0.11.0-p/share/fr/Makefile.am
+--- linphone-0.11.0/share/fr/Makefile.am	Wed Nov 28 23:27:47 2001
++++ linphone-0.11.0-p/share/fr/Makefile.am	Mon Jun 23 11:08:36 2003
 @@ -11,9 +11,9 @@
  	cd manual; ln -sf t1.html index.html
  
@@ -30,9 +30,9 @@ diff -durN linphone-0.7.1.orig/share/C/Makefile.am linphone-0.7.1/share/C/Makefi
 -			rm -rf $(linphone_manualdir)
 +			rm -rf $(DESTDIR)$(linphone_manualdir)
  
-diff -durN linphone-0.7.1.orig/share/fr/Makefile.am linphone-0.7.1/share/fr/Makefile.am
---- linphone-0.7.1.orig/share/fr/Makefile.am	Wed Nov 28 23:27:47 2001
-+++ linphone-0.7.1/share/fr/Makefile.am	Mon Apr 15 19:18:14 2002
+diff -Naur linphone-0.11.0/share/it/Makefile.am linphone-0.11.0-p/share/it/Makefile.am
+--- linphone-0.11.0/share/it/Makefile.am	Thu Jan 17 08:31:31 2002
++++ linphone-0.11.0-p/share/it/Makefile.am	Mon Jun 23 11:08:36 2003
 @@ -11,9 +11,9 @@
  	cd manual; ln -sf t1.html index.html
  
@@ -46,9 +46,9 @@ diff -durN linphone-0.7.1.orig/share/fr/Makefile.am linphone-0.7.1/share/fr/Make
 -			rm -rf $(linphone_manualdir)
 +			rm -rf $(DESTDIR)$(linphone_manualdir)
  
-diff -durN linphone-0.7.1.orig/share/it/Makefile.am linphone-0.7.1/share/it/Makefile.am
---- linphone-0.7.1.orig/share/it/Makefile.am	Thu Jan 17 08:31:31 2002
-+++ linphone-0.7.1/share/it/Makefile.am	Mon Apr 15 19:18:28 2002
+diff -Naur linphone-0.11.0/share/ja/Makefile.am linphone-0.11.0-p/share/ja/Makefile.am
+--- linphone-0.11.0/share/ja/Makefile.am	Fri Jan 10 22:57:06 2003
++++ linphone-0.11.0-p/share/ja/Makefile.am	Mon Jun 23 11:27:20 2003
 @@ -11,9 +11,9 @@
  	cd manual; ln -sf t1.html index.html
  
