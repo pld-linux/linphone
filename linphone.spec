@@ -1,9 +1,9 @@
 Summary:	Linphone Internet Phone
 Summary(pl):	Linphone - telefon internetowy
 Name:		linphone
-Version:	0.7.1
+Version:	0.9.0
 Release:	1
-License:	GPL
+License:	GPL v2
 Group:		Applications/Communications
 Source0:	http://www.linphone.org/download/%{name}-%{version}.tar.gz
 Patch0:		%{name}-DESTDIR.patch
@@ -50,6 +50,19 @@ G³ówne cechy linphone:
  - jest wolnodostêpnym oprogramowaniem (na licencji GPL)
  - ma dokumentacjê: pe³ny podrêcznik dostêpny z aplikacji.
 
+%package devel
+Summary:        Linphone Internet Phone
+Summary(pl):    Linphone - telefon internetowy
+Group:          Development/Libraries
+Requires:       %{name} = %{version}
+
+%description devel
+Development files for the Linphone Internet Phone.
+
+%description devel -l pl
+Pliki dla programistów u¿ywaj±cych Linphone - telefon internetowy.
+
+
 %prep
 %setup -q
 %patch0 -p1
@@ -57,19 +70,19 @@ G³ówne cechy linphone:
 %build
 sed -e s/AM_GNOME_GETTEXT/AM_GNU_GETTEXT/ configure.in > configure.in.tmp
 mv -f configure.in.tmp configure.in
-rm -f missing
+#rm -f missing
 #xml-i18n-toolize --copy --force
-%{__gettextize}
-aclocal -I %{_aclocaldir}/gnome
-autoheader
-%{__autoconf}
-%{__automake}
-cd oRTP
-autoheader
-%{__autoconf}
-%{__automake}
-cd ..
-%configure
+#%{__gettextize}
+#aclocal -I %{_aclocaldir}/gnome
+#autoheader
+#%{__autoconf}
+#%{__automake}
+#cd oRTP
+#autoheader
+#%{__autoconf}
+#%{__automake}
+#cd ..
+%configure2_13
 
 %{__make}
 
@@ -81,7 +94,8 @@ rm -rf $RPM_BUILD_ROOT
 	linphone_sysdir=%{_sysconfdir}/CORBA/servers \
 	linphone_applidir=%{_applnkdir}/Network/Communications
 
-gzip -9nf AUTHORS BUGS ChangeLog NEWS
+install mediastreamer/.libs/libmediastreamer.{so.0.0.0U,la,a} $RPM_BUILD_ROOT%{_libdir}
+install mediastreamer/.libs/libmsspeex.{so.0.0.0U,la,a} $RPM_BUILD_ROOT%{_libdir}
 
 %find_lang %{name} --with-gnome --all-name
 
@@ -98,11 +112,22 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
+%doc AUTHORS BUGS ChangeLog NEWS README TODO
 %config(noreplace) %{_sysconfdir}/CORBA/servers/*
-%doc *.gz
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/lib*.so.*.*
 %{_applnkdir}/Network/Communications/*
 %{_datadir}/applets/Network/*
 %{_pixmapsdir}/*
 %{_datadir}/sounds/*
+%{_datadir}/linphonec
+%{_datadir}/gtk-doc/html
+
+%files devel
+%defattr(644,root,root,755)
+%{_libdir}/*.a
+%{_libdir}/*.so
+%{_libdir}/*.la
+%{_includedir}/*.h
+%{_includedir}/osipua/*.h
+%{_includedir}/ortp/*.h
