@@ -1,20 +1,26 @@
-# TODO: use libraries from Speex.spec and libgsm.spec, not included versions
-#	the same with lpc10 after packaging it (http://www.arl.wustl.edu/~jaf/lpc/)
+# TODO: 
+#  - use libraries from Speex.spec and libgsm.spec, lpc10.spec and ffmpeg.spec
+#  - split main package to few smaller (there is linphonec for console,
+#    auto-answering machine and linphone applet for gnome)
+#  - check why --enable-alsa doesn't require alsa-lib-devel
+#  - check if all this configure option I've set are really needed
+
 Summary:	Linphone Internet Phone
 Summary(pl):	Linphone - telefon internetowy
 Name:		linphone
 Version:	0.11.0
-Release:	1
+Release:	2
 License:	LGPL/GPL
 Group:		Applications/Communications
 Source0:	http://simon.morlat.free.fr/download/%{version}/source/%{name}-%{version}.tar.gz
 # Source0-md5:	d44393ea9cfbd276c0cf0415849c9cc6
 Patch0:		%{name}-DESTDIR.patch
+Patch1:		%{name}-automake.patch
 URL:		http://www.linphone.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	gnome-libs-devel
-BuildRequires:	gnome-core-devel
+BuildRequires:	libgnomeui-devel
+BuildRequires:	XFree86-xrender-devel
 BuildRequires:	libosip-devel >= 0.9.7
 BuildRequires:	libtool >= 1:1.4.2-9
 BuildRequires:	scrollkeeper
@@ -82,14 +88,14 @@ Statyczne wersje bibliotek Linphone.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 rm -f missing
-mv -f aclocal.m4 acinclude.m4
 # gettext 0.11.5 used
 #%%{__gettextize}
 %{__libtoolize}
-%{__aclocal}
+%{__aclocal} -I /usr/share/aclocal/gnome2-macros
 %{__autoconf}
 %{__automake}
 cd oRTP
@@ -104,8 +110,10 @@ cd ../speex
 	%{__automake}
 cd ..
 %configure \
-	--with-html-dir=%{_gtkdocdir}
-
+	--with-html-dir=%{_gtkdocdir} \
+	--enable-platform-gnome-2 \
+	--enable-alsa \
+	--enable-ipv6
 %{__make}
 
 %install
@@ -149,6 +157,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/sounds/*
 %{_datadir}/linphonec
 %{_mandir}/man*/*
+%{_libdir}/bonobo/servers/GNOME_LinphoneApplet.server
+%{_libdir}/libspeex.1.0.0
+%{_libdir}/linphone_applet
+%{_datadir}/gnome-2.0/ui/GNOME_LinphoneApplet.xml
 
 %files devel
 %defattr(644,root,root,755)
