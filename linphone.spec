@@ -8,7 +8,7 @@ Summary:	Linphone Internet Phone
 Summary(pl):	Linphone - telefon internetowy
 Name:		linphone
 Version:	0.11.0
-Release:	2.1
+Release:	2.2
 License:	LGPL/GPL
 Group:		Applications/Communications
 Source0:	http://simon.morlat.free.fr/download/%{version}/source/%{name}-%{version}.tar.gz
@@ -156,7 +156,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/linphonec
 %{_mandir}/man*/*
 %{_libdir}/bonobo/servers/GNOME_LinphoneApplet.server
-%{_libdir}/linphone_applet
+%attr(755,root,root) %{_libdir}/linphone_applet
 %{_datadir}/gnome-2.0/ui/GNOME_LinphoneApplet.xml
 
 %files devel
