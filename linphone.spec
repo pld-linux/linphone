@@ -7,15 +7,15 @@
 Summary:	Linphone Internet Phone
 Summary(pl):	Linphone - telefon internetowy
 Name:		linphone
-Version:	0.11.0
-Release:	2.2
+Version:	0.12.0
+Release:	0.1
 License:	LGPL/GPL
 Group:		Applications/Communications
 Source0:	http://simon.morlat.free.fr/download/%{version}/source/%{name}-%{version}.tar.gz
-# Source0-md5:	d44393ea9cfbd276c0cf0415849c9cc6
+# Source0-md5:	79abbdcbec4c59cdd28a2722fe333b6e
 Patch0:		%{name}-DESTDIR.patch
 Patch1:		%{name}-automake.patch
-Patch2:		%{name}-system-libs.patch
+#Patch2:		%{name}-system-libs.patch
 URL:		http://www.linphone.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -93,7 +93,7 @@ Statyczne wersje bibliotek Linphone.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
+#%patch2 -p1
 
 %build
 rm -f missing
