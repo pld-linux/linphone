@@ -29,6 +29,7 @@ BuildRequires:	lpc10-devel >= 1.5
 BuildRequires:	scrollkeeper
 BuildRequires:	speex-devel >= 1.0.0
 BuildRequires:	xft-devel
+BuildRequires:	gtk-doc
 Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	/usr/bin/scrollkeeper-update
 Requires:	applnk
