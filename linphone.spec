@@ -24,6 +24,7 @@ Requires(post,postun):	/usr/bin/scrollkeeper-update
 Requires:	applnk
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%define		_prefix		/usr/X11R6
 %define		_sysconfdir	/etc/X11/GNOME
 %define		_gtkdocdir	%{_defaultdocdir}/gtk-doc/html
 
