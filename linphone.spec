@@ -1,9 +1,11 @@
+# TODO: use libraries from Speex.spec and libgsm.spec, not included versions
+#	the same with lpc10 after packaging it (http://www.arl.wustl.edu/~jaf/lpc/)
 Summary:	Linphone Internet Phone
 Summary(pl):	Linphone - telefon internetowy
 Name:		linphone
 Version:	0.9.1
 Release:	1
-License:	GPL v2
+License:	LGPL/GPL
 Group:		Applications/Communications
 Source0:	http://savannah.gnu.org/download/%{name}/%{version}/sources/%{name}-%{version}.tar.gz
 Patch0:		%{name}-DESTDIR.patch
@@ -13,6 +15,7 @@ BuildRequires:	automake
 BuildRequires:	gnome-libs-devel
 BuildRequires:	gnome-core-devel
 BuildRequires:	libosip-devel
+BuildRequires:	libtool >= 1:1.4.2-9
 BuildRequires:	scrollkeeper
 Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	/usr/bin/scrollkeeper
@@ -22,6 +25,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_prefix		/usr/X11R6
 %define		_sysconfdir	/etc/X11/GNOME
 %define		_mandir		%{_prefix}/man
+%define		_gtkdocdir	%{_defaultdocdir}/gtk-doc/html
 
 %description
 Linphone is a web phone: it let you phone to your friends anywhere in
@@ -51,44 +55,55 @@ G³ówne cechy linphone:
  - ma dokumentacjê: pe³ny podrêcznik dostêpny z aplikacji.
 
 %package devel
-Summary:	Linphone Internet Phone
-Summary(pl):	Linphone - telefon internetowy
+Summary:	Linphone Internet Phone - header files
+Summary(pl):	Telefon internetowy Linphone - pliki nag³ówkowe
 Group:		Development/Libraries
 Requires:	%{name} = %{version}
+Requires:	gtk-doc-common
 
 %description devel
 Development files for the Linphone Internet Phone.
 
 %description devel -l pl
-Pliki dla programistów u¿ywaj±cych Linphone - telefon internetowy.
+Pliki dla programistów u¿ywaj±cych telefonu internetowego Linphone.
+
+%package static
+Summary:	Linphone static libraries
+Summary(pl):	Statyczne biblioteki Linphone
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}
+
+%description static
+Static version of Linphone libraries.
+
+%description static -l pl
+Statyczne wersje bibliotek Linphone.
 
 %prep
 %setup -q
 %patch0 -p1
 
 %build
-sed -e s/AM_GNOME_GETTEXT/AM_GNU_GETTEXT/ configure.in > configure.in.tmp
-mv -f configure.in.tmp configure.in
 rm -f missing
-#xml-i18n-toolize --copy --force
+# gettext 0.11.5 used
 #%{__gettextize}
 %{__libtoolize}
-#%{__aclocal} -I macros
+%{__aclocal} -I macros -I m4
 %{__autoconf}
 %{__automake}
 cd oRTP
-	rm -rf ltmain.sh missing
-	ln -sf ../ltmain.sh ltmain.sh
 	%{__libtoolize} 
+	%{__aclocal}
+	%{__autoconf}
+	# don't use -f here
+	automake -a -c --foreign
+cd ../speex
 	%{__aclocal}
 	%{__autoconf}
 	%{__automake}
 cd ..
-cd speex
-	%{__autoconf}
-	%{__automake}
-cd ..
-%configure
+%configure \
+	--with-html-dir=%{_gtkdocdir}
 
 %{__make}
 
@@ -97,13 +112,17 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
+	HTML_DIR=%{_gtkdocdir} \
 	linphone_sysdir=%{_sysconfdir}/CORBA/servers \
 	linphone_applidir=%{_applnkdir}/Network/Communications
 
-#install mediastreamer/.libs/libmediastreamer.{so.0.0.0U,la,a} $RPM_BUILD_ROOT%{_libdir}
-#install mediastreamer/.libs/libmsspeex.{so.0.0.0U,la,a} $RPM_BUILD_ROOT%{_libdir}
+# belongs to Speex
+rm -f $RPM_BUILD_ROOT{%{_datadir}/{man/man1/speex???.1*,doc/manual.pdf},%{_libdir}/libspeex.*a}
 
 %find_lang %{name} --with-gnome --all-name
+
+%clean
+rm -rf $RPM_BUILD_ROOT
 
 %post
 /usr/bin/scrollkeeper-update
@@ -112,9 +131,6 @@ rm -rf $RPM_BUILD_ROOT
 %postun
 /usr/bin/scrollkeeper-update
 /sbin/ldconfig
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
@@ -127,16 +143,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_pixmapsdir}/*
 %{_datadir}/sounds/*
 %{_datadir}/linphonec
-%{_datadir}/gtk-doc/html
-#%{_mandir}/man1/*.1*
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/*.a
 %attr(755,root,root) %{_libdir}/*.so
 %{_libdir}/*.la
 %{_includedir}/*.h
-%dir %{_includedir}/osipua
-%{_includedir}/osipua/*.h
-%dir %{_includedir}/ortp
-%{_includedir}/ortp/*.h
+%{_includedir}/osipua
+%{_includedir}/ortp
+%{_gtkdocdir}/*
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/*.a
