@@ -1,4 +1,4 @@
-# TODO: 
+# TODO:
 #  - split main package to few smaller (there is linphonec for console,
 #    auto-answering machine and linphone applet for gnome)
 #  - check why --enable-alsa doesn't require alsa-lib-devel
@@ -104,7 +104,7 @@ rm -f missing
 %{__autoconf}
 %{__automake}
 cd oRTP
-	%{__libtoolize} 
+	%{__libtoolize}
 	%{__aclocal}
 	%{__autoconf}
 	# don't use -f here
