@@ -1,5 +1,4 @@
 # TODO: 
-#  - use libraries from Speex.spec and libgsm.spec, lpc10.spec and ffmpeg.spec
 #  - split main package to few smaller (there is linphonec for console,
 #    auto-answering machine and linphone applet for gnome)
 #  - check why --enable-alsa doesn't require alsa-lib-devel
@@ -9,22 +8,26 @@ Summary:	Linphone Internet Phone
 Summary(pl):	Linphone - telefon internetowy
 Name:		linphone
 Version:	0.11.0
-Release:	2
+Release:	2.1
 License:	LGPL/GPL
 Group:		Applications/Communications
 Source0:	http://simon.morlat.free.fr/download/%{version}/source/%{name}-%{version}.tar.gz
 # Source0-md5:	d44393ea9cfbd276c0cf0415849c9cc6
 Patch0:		%{name}-DESTDIR.patch
 Patch1:		%{name}-automake.patch
+Patch2:		%{name}-system-libs.patch
 URL:		http://www.linphone.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	libgnomeui-devel
+BuildRequires:	ffmpeg-devel >= 0.4.5
 BuildRequires:	gnome-panel-devel
-BuildRequires:	XFree86-xrender-devel
+BuildRequires:	libgnomeui-devel
+BuildRequires:	libgsm-devel >= 1.0.10
 BuildRequires:	libosip-devel >= 0.9.7
 BuildRequires:	libtool >= 1:1.4.2-9
+BuildRequires:	lpc10-devel >= 1.5
 BuildRequires:	scrollkeeper
+BuildRequires:	speex-devel >= 1.0.0
 BuildRequires:	xft-devel
 Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	/usr/bin/scrollkeeper-update
@@ -90,6 +93,7 @@ Statyczne wersje bibliotek Linphone.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 rm -f missing
@@ -105,10 +109,6 @@ cd oRTP
 	%{__autoconf}
 	# don't use -f here
 	automake -a -c --foreign
-cd ../speex
-	%{__aclocal}
-	%{__autoconf}
-	%{__automake}
 cd ..
 %configure \
 	--with-html-dir=%{_gtkdocdir} \
@@ -130,9 +130,6 @@ install -d $RPM_BUILD_ROOT%{_applnkdir}/Network/Communications \
 install share/linphone.desktop $RPM_BUILD_ROOT%{_applnkdir}/Network/Communications
 install share/linphone.gnorba $RPM_BUILD_ROOT%{_sysconfdir}/CORBA/servers
 install pixmaps/*.png pixmaps/*.xpm $RPM_BUILD_ROOT%{_pixmapsdir}
-
-# belongs to Speex
-rm -f $RPM_BUILD_ROOT{%{_datadir}/{man/man1/speex???.1*,doc/manual.pdf},%{_libdir}/libspeex.*a}
 
 %find_lang %{name} --with-gnome --all-name
 
@@ -159,7 +156,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/linphonec
 %{_mandir}/man*/*
 %{_libdir}/bonobo/servers/GNOME_LinphoneApplet.server
-%{_libdir}/libspeex.1.0.0
 %{_libdir}/linphone_applet
 %{_datadir}/gnome-2.0/ui/GNOME_LinphoneApplet.xml
 
@@ -167,9 +163,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/*.so
 %{_libdir}/*.la
-%{_includedir}/*.h
-%{_includedir}/osipua
 %{_includedir}/ortp
+%{_includedir}/osipua
 %{_gtkdocdir}/*
 
 %files static
