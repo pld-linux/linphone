@@ -11,6 +11,7 @@ Source0:	http://simon.morlat.free.fr/download/%{version}/source/%{name}-%{versio
 # Source0-md5:	d44393ea9cfbd276c0cf0415849c9cc6
 Patch0:		%{name}-DESTDIR.patch
 URL:		http://www.linphone.org/
+BuildRequires:	Xft-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gnome-libs-devel
@@ -18,7 +19,6 @@ BuildRequires:	gnome-core-devel
 BuildRequires:	libosip-devel >= 0.9.7
 BuildRequires:	libtool >= 1:1.4.2-9
 BuildRequires:	scrollkeeper
-BuildRequires:	Xft-devel
 Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	/usr/bin/scrollkeeper-update
 Requires:	applnk
