@@ -7,12 +7,12 @@
 Summary:	Linphone Internet Phone
 Summary(pl):	Linphone - telefon internetowy
 Name:		linphone
-Version:	1.0.1
-Release:	0.2
+Version:	1.1.0
+Release:	0.1
 License:	LGPL/GPL
 Group:		Applications/Communications
-Source0:	http://simon.morlat.free.fr/download/1.0.x/source/%{name}-%{version}.tar.gz
-# Source0-md5:	d65f977dd6512b7725fcb2e2c9713e65
+Source0:	http://simon.morlat.free.fr/download/1.1.x/source/%{name}-%{version}.tar.gz
+# Source0-md5:	9f164b41c76ef1caca164909dea199a1
 #Patch0:		%{name}-DESTDIR.patch
 Patch1:		%{name}-automake.patch
 #Patch2:		%{name}-system-libs.patch
@@ -25,9 +25,9 @@ BuildRequires:	gnome-panel-devel
 BuildRequires:	gtk-doc
 BuildRequires:	libgnomeui-devel
 BuildRequires:	libgsm-devel >= 1.0.10
-BuildRequires:	libosip-devel >= 0.9.7
+BuildRequires:	libosip2-devel >= 2.2.0
 BuildRequires:	libtool >= 1:1.4.2-9
-BuildRequires:	lpc10-devel >= 1.5
+#BuildRequires:	lpc10-devel >= 1.5
 BuildRequires:	scrollkeeper
 BuildRequires:	speex-devel >= 1.0.0
 BuildRequires:	xft-devel
