@@ -13,7 +13,7 @@ License:	LGPL/GPL
 Group:		Applications/Communications
 Source0:	http://simon.morlat.free.fr/download/1.2.x/source/%{name}-%{version}.tar.gz
 # Source0-md5:	bd5e513a665ce2e381afce64d569c707
-#Patch0:		%{name}-DESTDIR.patch
+Patch0:		%{name}-desktop.patch
 Patch1:		%{name}-automake.patch
 #Patch2:		%{name}-system-libs.patch
 URL:		http://www.linphone.org/
@@ -94,7 +94,7 @@ Statyczne wersje bibliotek Linphone.
 
 %prep
 %setup -q
-#%patch0 -p1
+%patch0 -p1
 %patch1 -p1
 #%patch2 -p1
 
