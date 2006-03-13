@@ -3,7 +3,7 @@
 #    auto-answering machine and linphone applet for gnome)
 #  - check why --enable-alsa doesn't require alsa-lib-devel
 #  - check if all this configure option I've set are really needed
-
+#  - separate libraries that do not require gnome into subpackages for Jingle support in kopete
 Summary:	Linphone Internet Phone
 Summary(pl):	Linphone - telefon internetowy
 Name:		linphone
