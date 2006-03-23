@@ -1,144 +1,148 @@
---- linphone-0.11.0/mediastreamer/Makefile.am.orig	Mon May  5 16:30:01 2003
-+++ linphone-0.11.0/mediastreamer/Makefile.am	Fri Jun 27 12:12:12 2003
-@@ -72,8 +72,8 @@
- 															
- 					
+--- linphone-1.3.2/support/Makefile.am.orig	2006-02-18 22:51:52.000000000 +0100
++++ linphone-1.3.2/support/Makefile.am	2006-03-23 11:56:05.223243000 +0100
+@@ -13,4 +13,4 @@
+ 					gspawn.c gspawn.h \
+ 					gshell.c gshell.h
+ 
+-INCLUDES=-I$(top_srcdir)/oRTP/include
+\ Brak znaku nowej linii na koñcu pliku
++INCLUDES=-I/usr/include/ortp
+--- linphone-1.3.2/mediastreamer/Makefile.am.orig	2006-03-08 10:04:33.000000000 +0100
++++ linphone-1.3.2/mediastreamer/Makefile.am	2006-03-23 11:55:46.723243000 +0100
+@@ -78,9 +78,9 @@
+ 
+ 
  libmediastreamer_la_LIBADD= $(GLIB_LIBS) \
 -							../gsmlib/libgsm.la \
 -							../lpc10-1.5/liblpc10.la \
+-							../oRTP/src/libortp.la \
 +							-lgsm \
 +							-llpc10 \
- 							../oRTP/src/libortp.la
- 	
- #the xine wrapper video output */
-@@ -89,7 +89,7 @@
- #the ffmpeg wrapper video encoder and decoder
- libmsffmpeg_la_SOURCES=msavencoder.c msavencoder.h\
- 						msavdecoder.c msavdecoder.h
--libmsffmpeg_la_LIBADD=libmediastreamer.la ../ffmpeg/libavcodec/libavcodec.la
-+libmsffmpeg_la_LIBADD=libmediastreamer.la -lavcodec
++							-lortp \
+ 							$(JACK_LIBS)\
+ 							$(SAMPLERATE_LIBS)\
+ 							$(SUPPORTLIB) \
+@@ -164,9 +164,8 @@
  
- #the gdk video output plugin
- libmsgdkvo_la_SOURCES=msvideooutput.c msvideooutput.h
-@@ -98,7 +98,7 @@
- 
- #the speex encoder and decoder 
- libmsspeex_la_SOURCES=msspeexenc.c msspeexenc.h msspeexdec.c msspeexdec.h
--libmsspeex_la_LIBADD=libmediastreamer.la $(top_srcdir)/speex/libspeex/libspeex.la
-+libmsspeex_la_LIBADD=libmediastreamer.la -lspeex
- 
- #the v4l plugin 
- libmsv4l_la_SOURCES=msv4l.c msv4l.h
-@@ -178,9 +178,6 @@
+ INCLUDES=  -I$(top_srcdir) \
  						-I$(top_srcdir)/mediastreamer \
- 						-I$(top_srcdir)/oRTP/src \
- 						-I$(top_srcdir)/oRTP \
+-						-I$(top_srcdir)/oRTP/include \
 -						-I$(top_srcdir)/gsmlib   \
 -						-I$(top_srcdir)/lpc10-1.5    \
--                        -I$(top_srcdir)/ffmpeg/libavcodec \
-+                        -I/usr/include/ffmpeg \
- 						-I/usr/X11R6/include/X11 \
--						-I/usr/include/SDL \
--						-I$(top_srcdir)/speex/libspeex
-+						-I/usr/include/SDL
---- linphone-0.11.0/media_api/Makefile.am.orig	Mon Sep 23 14:13:20 2002
-+++ linphone-0.11.0/media_api/Makefile.am	Fri Jun 27 12:10:21 2003
-@@ -22,11 +22,7 @@
++						-I/usr/include/ortp \
++						-I/usr/include/gsmlib   \
+ 						$(SPEEX_CFLAGS) \
+ 						$(TRUESPEECH_INCLUDES) 
+ 
+--- linphone-1.3.2/mediastreamer2/Makefile.am.orig	2006-03-16 18:14:41.000000000 +0100
++++ linphone-1.3.2/mediastreamer2/Makefile.am	2006-03-23 11:54:44.233243000 +0100
+@@ -35,15 +35,15 @@
+ 	awk 'BEGIN { print("MSFilterDesc * ms_filter_descs[]={") } { printf("&%s,\n",$$1) } END{ print("NULL\n};\n") } ' filterdescs.txt >> $@
+ 	rm -f filterdescs.txt
+ 
+-libmediastreamer2_la_LIBADD=	$(top_builddir)/oRTP/src/libortp.la \
++libmediastreamer2_la_LIBADD=	-lortp \
+ 				$(ALSA_LIBS) \
+ 				$(SPEEX_LIBS) \
+-				$(top_builddir)/gsmlib/libgsm.la \
++				-lgsm \
+ 				-lrt
+ 
+-INCLUDES=-I$(top_srcdir)/oRTP/include -I$(top_srcdir)/gsmlib
++INCLUDES=-I/usr/include/ortp -I/usr/include/gsmlib
+ 
+-ORTP_CFLAGS=`cat $(top_builddir)/oRTP/ortp.defs`
++ORTP_CFLAGS=`pkg-config --cflags ortp`
+ 
+ AM_CFLAGS=$(ORTP_CFLAGS) $(SPEEX_CFLAGS) $(STRICT_OPTIONS)
+ 
+--- linphone-1.3.2/media_api/Makefile.am.orig	2002-09-18 20:53:34.000000000 +0200
++++ linphone-1.3.2/media_api/Makefile.am	2006-03-23 11:46:12.553243000 +0100
+@@ -22,11 +22,8 @@
  DEFS=@DEFS@ @SOUNDDEFS@ -DDEBUG -DG_LOG_DOMAIN=\"MediaApi\" 
  
  INCLUDES=-I$(top_srcdir)/mediastreamer \
 -		-I$(top_srcdir)/speex \
 -		-I$(top_srcdir)/gsmlib \
- 		-I$(top_srcdir)/oRTP \
+-		-I$(top_srcdir)/oRTP \
 -		-I$(top_srcdir)/oRTP/src \
 -		-I$(top_srcdir)/lpc10-1.5 \
 -		-I$(top_srcdir)/ffmpeg 
-+		-I$(top_srcdir)/oRTP/src
++		-I/usr/include/gsmlib \
++		-I/usr/include/ortp \
++		-I/usr/include/ffmpeg 
  
  
---- linphone-0.11.0/coreapi/Makefile.am.orig	Thu Mar 27 11:31:16 2003
-+++ linphone-0.11.0/coreapi/Makefile.am	Fri Jun 27 12:08:45 2003
-@@ -6,7 +6,6 @@
- 	-I$(top_srcdir)/oRTP/src \
- 	-I$(top_srcdir)/oRTP/ \
+--- linphone-1.3.2/coreapi/Makefile.am.orig	2006-02-14 17:37:35.000000000 +0100
++++ linphone-1.3.2/coreapi/Makefile.am	2006-03-23 11:44:20.533243000 +0100
+@@ -8,9 +8,7 @@
+ INCLUDES = \
+ 	-I$(top_srcdir)\
+ 	-I$(top_srcdir)/exosip\
+-	-I$(top_srcdir)/oRTP/include \
+-	-I$(top_builddir)/oRTP/ \
+-	-I$(top_srcdir)/oRTP/ \
++	-I/usr/include/ortp \
  	-I$(top_srcdir)/mediastreamer \
--	-I$(top_srcdir)/speex/libspeex \
+ 	$(SPEEX_CFLAGS) \
  	-I$(osip_prefix)/include/ 
- 
- EXTRA_DIST= parse-path.cP 
---- linphone-0.11.0/console/Makefile.am.orig	Fri Feb 28 15:48:37 2003
-+++ linphone-0.11.0/console/Makefile.am	Fri Jun 27 12:08:55 2003
-@@ -7,7 +7,6 @@
- 	-I$(top_srcdir)/oRTP/src \
- 	-I$(top_srcdir)/oRTP/ \
+--- linphone-1.3.2/console/Makefile.am.orig	2006-01-29 13:11:50.000000000 +0100
++++ linphone-1.3.2/console/Makefile.am	2006-03-23 11:44:11.043243000 +0100
+@@ -5,9 +5,7 @@
+ 	-I$(top_srcdir)/coreapi\
+ 	-I$(top_srcdir)/osipua/\
+ 	-I$(top_srcdir)/osipua/src \
+-	-I$(top_srcdir)/oRTP/include \
+-	-I$(top_builddir)/oRTP/ \
+-	-I$(top_srcdir)/oRTP/ \
++	-I/usr/include/ortp \
  	-I$(top_srcdir)/mediastreamer \
--	-I$(top_srcdir)/speex/libspeex \
- 	-I$(osip_prefix)/include/ 
- 
- 
---- linphone-0.11.0/gnome/Makefile.am.orig	Thu Mar 27 11:31:09 2003
-+++ linphone-0.11.0/gnome/Makefile.am	Fri Jun 27 12:09:31 2003
-@@ -8,7 +8,6 @@
- 	-I$(top_srcdir)/oRTP/src \
- 	-I$(top_srcdir)/oRTP/ \
+ 	$(SPEEX_CFLAGS)\
+ 	-I$(osip_prefix)/include \
+@@ -32,7 +30,7 @@
+ #in order to workaround a arm-linux cross-compilation libtool bug
+ #we need to explicit again the dependencies of the executables:
+ if ARMBUILD
+-AM_LDFLAGS= 	$(top_builddir)/oRTP/src/libortp.la \
++AM_LDFLAGS= 	-lortp \
+ 				$(SPEEX_LIBS) \
+ 				$(OSIP_LIBS)
+ endif
+--- linphone-1.3.2/gnome/Makefile.am.orig	2006-01-23 17:53:48.000000000 +0100
++++ linphone-1.3.2/gnome/Makefile.am	2006-03-23 11:44:45.513243000 +0100
+@@ -17,10 +17,8 @@
+ INCLUDES = \
+ 	-I$(top_srcdir)\
+ 	-I$(top_srcdir)/intl \
+-	-I$(top_srcdir)/oRTP/src \
+-	-I$(top_srcdir)/oRTP/ \
++	-I/usr/include/ortp \
  	-I$(top_srcdir)/mediastreamer \
 -	-I$(top_srcdir)/speex/libspeex \
  	-I$(top_srcdir)/coreapi \
- 	-I$(top_srcdir)/osipua/src 
- 
---- linphone-0.11.0/Makefile.am.orig	Wed Mar 12 18:22:51 2003
-+++ linphone-0.11.0/Makefile.am	Fri Jun 27 11:54:50 2003
-@@ -1,6 +1,6 @@
- ## Process this file with automake to produce Makefile.in
- 
--SUBDIRS = pixmaps ffmpeg po macros debian ipkg oRTP gsmlib lpc10-1.5 speex mediastreamer \
-+SUBDIRS = pixmaps po macros debian ipkg oRTP mediastreamer \
- 		media_api osipua coreapi console gnome share developer-docs 
- 
- EXTRA_DIST = config.rpath mkinstalldirs  linphone2.glade BUGS linphone.kdevprj \
---- linphone-0.11.0/configure.in.orig	Mon May 19 10:43:31 2003
-+++ linphone-0.11.0/configure.in	Fri Jun 27 11:57:03 2003
-@@ -178,24 +178,12 @@
- 
- if test "$video" = "true"; then
- 	echo "WARNING: Video support is under developpement, nothing works."
--	dnl check if nasm is present (needed to compile ffmpeg )
--	AC_CHECK_PROG(NASM, nasm, true, false)
--	
--	if $NASM ;then
--		cd $(top_builddir2)/ffmpeg; ln -sf Makefile.orig Makefile; cd ..
--		cd $(top_builddir2)/ffmpeg/libavcodec; ln -sf Makefile.libtool Makefile; cd .. ;cd ..
--		echo "Video support will be build, although it is not functionnal for the moment."	
--		AVCODEC_LIBS="../ffmpeg/libavcodec/libavcodec.la"
-+		AVCODEC_LIBS="-lavcodec"
- 		AC_SUBST(AVCODEC_LIBS)
- 		AC_DEFINE(HAVE_AVCODEC,1,[Defines if we can use libavcodec library])
--	else
--		AC_MSG_ERROR("nasm is missing ! You require nasm to build the video support in linphone.")
--	fi
- 	PKG_CHECK_MODULES(GDK,gdk-2.0 >= 2.0.0)
- 	AC_SUBST(GDK_CFLAGS)
- 	AC_SUBST(GDK_LIBS)
--else
--   cd $(top_builddir2)/ffmpeg; ln -sf Makefile.null Makefile ; cd ..
- fi
- 
- dnl mediastreamer configuration
-@@ -227,7 +215,7 @@
- AC_SUBST(SOUNDDEFS)
+ 	-I$(top_srcdir)/osipua/ \
+ 	-I$(top_srcdir)/osipua/src \
+--- linphone-1.3.2/Makefile.am.orig	2006-01-29 13:11:50.000000000 +0100
++++ linphone-1.3.2/Makefile.am	2006-03-23 11:42:32.353243000 +0100
+@@ -8,7 +8,7 @@
+ endif
  
  
--AC_CONFIG_SUBDIRS( ffmpeg speex oRTP osipua)
-+AC_CONFIG_SUBDIRS( oRTP osipua)
+-SUBDIRS = m4 support pixmaps po ipkg oRTP gsmlib lpc10-1.5 \
++SUBDIRS = m4 support pixmaps po ipkg \
+                 $(WIN32ACM_DIR) mediastreamer mediastreamer2\
+ 		media_api exosip coreapi console gnome share developer-docs
  
- ##################################################
- # Check for gtk-doc.
-@@ -252,8 +240,6 @@
- mediastreamer/Makefile
- media_api/Makefile
- osipua/Makefile
--gsmlib/Makefile
--lpc10-1.5/Makefile
- coreapi/Makefile
- gnome/Makefile
- console/Makefile
+--- linphone-1.3.2/m4/exosip.m4.orig	2005-02-04 16:19:59.000000000 +0100
++++ linphone-1.3.2/m4/exosip.m4	2006-03-23 11:56:57.063243000 +0100
+@@ -30,8 +30,8 @@
+ esac
+ 
+ AC_CHECK_LIB(posix4,sem_open,[EXOSIP_LIBS="$EXOSIP_LIBS -lposix4 -mt"])
+-AC_CHECK_LIB(nsl,nis_add,[EXOSIP_LIBS="$EXOSIP_LIBS -lnsl"])
+-AC_CHECK_LIB(socket,sendto,[EXOSIP_LIBS="$EXOSIP_LIBS -lsocket"])
++dnl AC_CHECK_LIB(nsl,nis_add,[EXOSIP_LIBS="$EXOSIP_LIBS -lnsl"])
++AC_CHECK_FUNC(sendto,,[AC_CHECK_LIB(socket,sendto,[EXOSIP_LIBS="$EXOSIP_LIBS -lsocket"])])
+ AC_CHECK_LIB(rt,clock_gettime,[EXOSIP_LIBS="$EXOSIP_LIBS -lrt"])
+ dnl Checks for header files.
+ AC_HEADER_STDC
