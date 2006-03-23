@@ -1,7 +1,6 @@
 # TODO:
 #  - split main package to few smaller (there is linphonec for console,
 #    auto-answering machine and linphone applet for gnome)
-#  - check why --enable-alsa doesn't require alsa-lib-devel
 #  - check if all this configure option I've set are really needed
 #  - separate libraries that do not require gnome into subpackages for Jingle support in kopete
 Summary:	Linphone Internet Phone
@@ -14,9 +13,9 @@ Group:		Applications/Communications
 Source0:	http://simon.morlat.free.fr/download/1.3.x/source/%{name}-%{version}.tar.gz
 # Source0-md5:	ace3e79cc0424d7a4fd134e38be153aa
 Patch0:		%{name}-desktop.patch
-Patch1:		%{name}-automake.patch
-#Patch2:		%{name}-system-libs.patch
+Patch1:		%{name}-system-libs.patch
 URL:		http://www.linphone.org/
+BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	ffmpeg-devel >= 0.4.5
@@ -24,11 +23,14 @@ BuildRequires:	gettext-devel
 BuildRequires:	gnome-common >= 2.8.0
 BuildRequires:	gnome-panel-devel
 BuildRequires:	gtk-doc
+BuildRequires:	jack-audio-connection-kit-devel >= 0.15.0
 BuildRequires:	libgnomeui-devel
 BuildRequires:	libgsm-devel >= 1.0.10
 BuildRequires:	libosip2-devel >= 2.2.0
+BuildRequires:	libsamplerate-devel >= 0.0.13
 BuildRequires:	libtool >= 1:1.4.2-9
-#BuildRequires:	lpc10-devel >= 1.5
+BuildRequires:	lpc10-devel >= 1.5
+BuildRequires:	ortp-devel >= 0.9.1
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.98
 BuildRequires:	scrollkeeper
@@ -36,6 +38,7 @@ BuildRequires:	speex-devel >= 1.0.0
 BuildRequires:	xft-devel
 Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	/usr/bin/scrollkeeper-update
+Requires:	ortp >= 0.9.1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -69,8 +72,17 @@ G³ówne cechy linphone:
 Summary:	Linphone Internet Phone - header files
 Summary(pl):	Telefon internetowy Linphone - pliki nag³ówkowe
 Group:		Development/Libraries
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
+Requires:	alsa-lib-devel >= 0.9.0
+Requires:	glib2-devel >= 2.0.0
 Requires:	gtk-doc-common
+Requires:	jack-audio-connection-kit-devel >= 0.15.0
+Requires:	libgsm-devel >= 1.0.10
+Requires:	libosip2-devel >= 2.2.0
+Requires:	libsamplerate-devel >= 0.0.13
+Requires:	lpc10-devel >= 1.5
+Requires:	ortp-devel >= 0.9.1
+Requires:	speex-devel >= 1.0.0
 
 %description devel
 Development files for the Linphone Internet Phone.
@@ -82,7 +94,7 @@ Pliki dla programistów u¿ywaj±cych telefonu internetowego Linphone.
 Summary:	Linphone static libraries
 Summary(pl):	Statyczne biblioteki Linphone
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static version of Linphone libraries.
@@ -94,7 +106,6 @@ Statyczne wersje bibliotek Linphone.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-#%patch2 -p1
 
 %build
 # requires .po file fixes
@@ -102,17 +113,10 @@ Statyczne wersje bibliotek Linphone.
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
+%{__autoheader}
 %{__automake}
-cd oRTP
-	%{__libtoolize}
-	%{__aclocal}
-	%{__autoconf}
-	# don't use -f here
-	automake -a -c --foreign
-cd ..
 %configure \
 	--with-html-dir=%{_gtkdocdir} \
-	--enable-platform-gnome-2 \
 	--enable-alsa \
 	--enable-ipv6
 %{__make}
@@ -148,7 +152,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS BUGS ChangeLog NEWS README TODO
 %attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libdir}/lib*.so.*.*
+%attr(755,root,root) %{_libdir}/liblinphone.so.*.*.*
 %attr(755,root,root) %{_libdir}/linphone_applet
 %{_libdir}/mediastream
 %{_libdir}/bonobo/servers/GNOME_LinphoneApplet.server
@@ -160,13 +164,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/lib*.so
-%{_libdir}/lib*.la
+%attr(755,root,root) %{_libdir}/liblinphone.so
+%{_libdir}/liblinphone.la
 %{_includedir}/linphone
-%{_includedir}/ortp
-%{_gtkdocdir}/*
+%{_gtkdocdir}/mediastreamer
 %{_pkgconfigdir}/*.pc
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/lib*.a
+%{_libdir}/liblinphone.a
