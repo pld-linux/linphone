@@ -30,15 +30,13 @@ BuildRequires:	libosip2-devel >= 2.2.0
 BuildRequires:	libtool >= 1:1.4.2-9
 #BuildRequires:	lpc10-devel >= 1.5
 BuildRequires:	pkgconfig
+BuildRequires:	rpmbuild(macros) >= 1.98
 BuildRequires:	scrollkeeper
 BuildRequires:	speex-devel >= 1.0.0
 BuildRequires:	xft-devel
 Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	/usr/bin/scrollkeeper-update
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%define		_sysconfdir	/etc/X11/GNOME
-%define		_gtkdocdir	%{_defaultdocdir}/gtk-doc/html
 
 %description
 Linphone is a web phone: it let you phone to your friends anywhere in
@@ -99,9 +97,8 @@ Statyczne wersje bibliotek Linphone.
 #%patch2 -p1
 
 %build
-rm -f missing
-# gettext 0.11.5 used
-#%%{__gettextize}
+# requires .po file fixes
+#%%{__glib_gettextize}
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
@@ -123,19 +120,16 @@ cd ..
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_desktopdir} \
-	$RPM_BUILD_ROOT%{_sysconfdir}/CORBA/servers \
 	$RPM_BUILD_ROOT%{_pixmapsdir}
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT \
-	HTML_DIR=%{_gtkdocdir}
+	DESTDIR=$RPM_BUILD_ROOT
 
 install share/linphone.desktop $RPM_BUILD_ROOT%{_desktopdir}
-install share/linphone.gnorba $RPM_BUILD_ROOT%{_sysconfdir}/CORBA/servers
 install pixmaps/*.png pixmaps/*.xpm $RPM_BUILD_ROOT%{_pixmapsdir}
 
-rm -f $RPM_BUILD_ROOT%{_includedir}/speex*
-rm -f $RPM_BUILD_ROOT%{_libdir}/libspeex*
+# kill .desktop in GNOME1-specific location
+rm -rf $RPM_BUILD_ROOT%{_datadir}/gnome/apps
 
 %find_lang %{name} --with-gnome --all-name
 
@@ -153,23 +147,21 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS BUGS ChangeLog NEWS README TODO
-%config(noreplace) %{_sysconfdir}/CORBA/servers/*
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/lib*.so.*.*
+%attr(755,root,root) %{_libdir}/linphone_applet
+%{_libdir}/mediastream
+%{_libdir}/bonobo/servers/GNOME_LinphoneApplet.server
+%{_datadir}/gnome-2.0/ui/GNOME_LinphoneApplet.xml
+%{_datadir}/sounds/*
 %{_desktopdir}/*
 %{_pixmapsdir}/*
-%{_datadir}/sounds/*
-%{_mandir}/man*/*
-%{_libdir}/mediastream
-%{_datadir}/gnome/apps/Internet/linphone.desktop
-%{_libdir}/bonobo/servers/GNOME_LinphoneApplet.server
-%attr(755,root,root) %{_libdir}/linphone_applet
-%{_datadir}/gnome-2.0/ui/GNOME_LinphoneApplet.xml
+%{_mandir}/man1/*
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/*.so
-%{_libdir}/*.la
+%attr(755,root,root) %{_libdir}/lib*.so
+%{_libdir}/lib*.la
 %{_includedir}/linphone
 %{_includedir}/ortp
 %{_gtkdocdir}/*
@@ -177,4 +169,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/*.a
+%{_libdir}/lib*.a
