@@ -6,12 +6,12 @@
 Summary:	Linphone Internet Phone
 Summary(pl):	Linphone - telefon internetowy
 Name:		linphone
-Version:	1.3.2
+Version:	1.3.5
 Release:	1
 License:	LGPL/GPL
 Group:		Applications/Communications
 Source0:	http://simon.morlat.free.fr/download/1.3.x/source/%{name}-%{version}.tar.gz
-# Source0-md5:	ace3e79cc0424d7a4fd134e38be153aa
+# Source0-md5:	522b08a22c5e1de281676cddd3f2bcf6
 Patch0:		%{name}-desktop.patch
 Patch1:		%{name}-system-libs.patch
 URL:		http://www.linphone.org/
