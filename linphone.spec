@@ -35,7 +35,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.98
 BuildRequires:	scrollkeeper
 BuildRequires:	speex-devel >= 1.0.0
-BuildRequires:	xft-devel
+BuildRequires:	xorg-lib-libXft-devel
 Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	/usr/bin/scrollkeeper-update
 Requires:	ortp >= 0.9.1
