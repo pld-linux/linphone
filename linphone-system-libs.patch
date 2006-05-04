@@ -1,16 +1,56 @@
---- linphone-1.3.2/support/Makefile.am.orig	2006-02-18 22:51:52.000000000 +0100
-+++ linphone-1.3.2/support/Makefile.am	2006-03-23 11:56:05.223243000 +0100
+--- linphone-1.3.5/m4/exosip.m4.wiget	2005-02-04 16:19:59.000000000 +0100
++++ linphone-1.3.5/m4/exosip.m4	2006-05-04 23:43:42.000000000 +0200
+@@ -30,8 +30,8 @@
+ esac
+ 
+ AC_CHECK_LIB(posix4,sem_open,[EXOSIP_LIBS="$EXOSIP_LIBS -lposix4 -mt"])
+-AC_CHECK_LIB(nsl,nis_add,[EXOSIP_LIBS="$EXOSIP_LIBS -lnsl"])
+-AC_CHECK_LIB(socket,sendto,[EXOSIP_LIBS="$EXOSIP_LIBS -lsocket"])
++dnl AC_CHECK_LIB(nsl,nis_add,[EXOSIP_LIBS="$EXOSIP_LIBS -lnsl"])
++AC_CHECK_FUNC(sendto,,[AC_CHECK_LIB(socket,sendto,[EXOSIP_LIBS="$EXOSIP_LIBS -lsocket"])])
+ AC_CHECK_LIB(rt,clock_gettime,[EXOSIP_LIBS="$EXOSIP_LIBS -lrt"])
+ dnl Checks for header files.
+ AC_HEADER_STDC
+--- linphone-1.3.5/mediastreamer2/Makefile.am.wiget	2006-03-28 16:54:20.000000000 +0200
++++ linphone-1.3.5/mediastreamer2/Makefile.am	2006-05-04 23:48:14.000000000 +0200
+@@ -52,11 +52,11 @@
+ 	awk 'BEGIN { print("MSFilterDesc * ms_filter_descs[]={") } { printf("&%s,\n",$$1) } END{ print("NULL\n};\n") } ' filterdescs.txt >> $@
+ 	rm -f filterdescs.txt
+ 
+-libmediastreamer2_la_LIBADD=	$(top_builddir)/oRTP/src/libortp.la \
++libmediastreamer2_la_LIBADD=	-lortp \
+ 				$(ALSA_LIBS) \
+ 				$(ARTS_LIBS) \
+ 				$(SPEEX_LIBS) \
+-				$(top_builddir)/gsmlib/libgsm.la \
++				-lgsm \
+ 				-lrt
+ 
+ if BUILD_VIDEO
+@@ -65,8 +65,8 @@
+ 
+ libquickstream_la_LIBADD=libmediastreamer2.la
+ 
+-INCLUDES=-I$(top_srcdir)/oRTP/include -I$(top_srcdir)/gsmlib
++INCLUDES=-I/usr/include/ortp
+ 
+-ORTP_CFLAGS=`cat $(top_builddir)/oRTP/ortp.defs`
++ORTP_CFLAGS=`pkg-config --cflags ortp`
+ 
+ AM_CFLAGS=$(ORTP_CFLAGS) $(SPEEX_CFLAGS) $(STRICT_OPTIONS)
+--- linphone-1.3.5/support/Makefile.am.wiget	2006-02-18 22:51:52.000000000 +0100
++++ linphone-1.3.5/support/Makefile.am	2006-05-04 23:43:41.000000000 +0200
 @@ -13,4 +13,4 @@
  					gspawn.c gspawn.h \
  					gshell.c gshell.h
  
 -INCLUDES=-I$(top_srcdir)/oRTP/include
-\ Brak znaku nowej linii na koñcu pliku
+\ Brak znaku nowej linii na koÅ„cu pliku
 +INCLUDES=-I/usr/include/ortp
---- linphone-1.3.2/mediastreamer/Makefile.am.orig	2006-03-08 10:04:33.000000000 +0100
-+++ linphone-1.3.2/mediastreamer/Makefile.am	2006-03-23 11:55:46.723243000 +0100
-@@ -78,9 +78,9 @@
- 
+--- linphone-1.3.5/mediastreamer/Makefile.am.wiget	2006-03-28 16:36:26.000000000 +0200
++++ linphone-1.3.5/mediastreamer/Makefile.am	2006-05-04 23:43:41.000000000 +0200
+@@ -77,9 +77,9 @@
+ endif
  
  libmediastreamer_la_LIBADD= $(GLIB_LIBS) \
 -							../gsmlib/libgsm.la \
@@ -22,7 +62,7 @@
  							$(JACK_LIBS)\
  							$(SAMPLERATE_LIBS)\
  							$(SUPPORTLIB) \
-@@ -164,9 +164,7 @@
+@@ -163,9 +163,7 @@
  
  INCLUDES=  -I$(top_srcdir) \
  						-I$(top_srcdir)/mediastreamer \
@@ -33,30 +73,8 @@
  						$(SPEEX_CFLAGS) \
  						$(TRUESPEECH_INCLUDES) 
  
---- linphone-1.3.2/mediastreamer2/Makefile.am.orig	2006-03-16 18:14:41.000000000 +0100
-+++ linphone-1.3.2/mediastreamer2/Makefile.am	2006-03-23 11:54:44.233243000 +0100
-@@ -35,15 +35,15 @@
- 	awk 'BEGIN { print("MSFilterDesc * ms_filter_descs[]={") } { printf("&%s,\n",$$1) } END{ print("NULL\n};\n") } ' filterdescs.txt >> $@
- 	rm -f filterdescs.txt
- 
--libmediastreamer2_la_LIBADD=	$(top_builddir)/oRTP/src/libortp.la \
-+libmediastreamer2_la_LIBADD=	-lortp \
- 				$(ALSA_LIBS) \
- 				$(SPEEX_LIBS) \
--				$(top_builddir)/gsmlib/libgsm.la \
-+				-lgsm \
- 				-lrt
- 
--INCLUDES=-I$(top_srcdir)/oRTP/include -I$(top_srcdir)/gsmlib
-+INCLUDES=-I/usr/include/ortp
- 
--ORTP_CFLAGS=`cat $(top_builddir)/oRTP/ortp.defs`
-+ORTP_CFLAGS=`pkg-config --cflags ortp`
- 
- AM_CFLAGS=$(ORTP_CFLAGS) $(SPEEX_CFLAGS) $(STRICT_OPTIONS)
- 
---- linphone-1.3.2/media_api/Makefile.am.orig	2002-09-18 20:53:34.000000000 +0200
-+++ linphone-1.3.2/media_api/Makefile.am	2006-03-23 11:46:12.553243000 +0100
+--- linphone-1.3.5/media_api/Makefile.am.wiget	2002-09-18 20:53:34.000000000 +0200
++++ linphone-1.3.5/media_api/Makefile.am	2006-05-04 23:43:41.000000000 +0200
 @@ -22,11 +22,7 @@
  DEFS=@DEFS@ @SOUNDDEFS@ -DDEBUG -DG_LOG_DOMAIN=\"MediaApi\" 
  
@@ -71,8 +89,8 @@
 +		-I/usr/include/ffmpeg 
  
  
---- linphone-1.3.2/coreapi/Makefile.am.orig	2006-02-14 17:37:35.000000000 +0100
-+++ linphone-1.3.2/coreapi/Makefile.am	2006-03-23 11:44:20.533243000 +0100
+--- linphone-1.3.5/coreapi/Makefile.am.wiget	2006-02-14 17:37:35.000000000 +0100
++++ linphone-1.3.5/coreapi/Makefile.am	2006-05-04 23:43:41.000000000 +0200
 @@ -8,9 +8,7 @@
  INCLUDES = \
  	-I$(top_srcdir)\
@@ -84,8 +102,8 @@
  	-I$(top_srcdir)/mediastreamer \
  	$(SPEEX_CFLAGS) \
  	-I$(osip_prefix)/include/ 
---- linphone-1.3.2/console/Makefile.am.orig	2006-01-29 13:11:50.000000000 +0100
-+++ linphone-1.3.2/console/Makefile.am	2006-03-23 11:44:11.043243000 +0100
+--- linphone-1.3.5/console/Makefile.am.wiget	2006-01-29 13:11:50.000000000 +0100
++++ linphone-1.3.5/console/Makefile.am	2006-05-04 23:43:41.000000000 +0200
 @@ -5,9 +5,7 @@
  	-I$(top_srcdir)/coreapi\
  	-I$(top_srcdir)/osipua/\
@@ -106,8 +124,8 @@
  				$(SPEEX_LIBS) \
  				$(OSIP_LIBS)
  endif
---- linphone-1.3.2/gnome/Makefile.am.orig	2006-01-23 17:53:48.000000000 +0100
-+++ linphone-1.3.2/gnome/Makefile.am	2006-03-23 11:44:45.513243000 +0100
+--- linphone-1.3.5/gnome/Makefile.am.wiget	2006-01-23 17:53:48.000000000 +0100
++++ linphone-1.3.5/gnome/Makefile.am	2006-05-04 23:43:41.000000000 +0200
 @@ -17,10 +17,8 @@
  INCLUDES = \
  	-I$(top_srcdir)\
@@ -120,10 +138,10 @@
  	-I$(top_srcdir)/coreapi \
  	-I$(top_srcdir)/osipua/ \
  	-I$(top_srcdir)/osipua/src \
---- linphone-1.3.2/Makefile.am.orig	2006-01-29 13:11:50.000000000 +0100
-+++ linphone-1.3.2/Makefile.am	2006-03-23 11:42:32.353243000 +0100
-@@ -8,7 +8,7 @@
- endif
+--- linphone-1.3.5/Makefile.am.wiget	2006-04-04 10:18:47.000000000 +0200
++++ linphone-1.3.5/Makefile.am	2006-05-04 23:43:41.000000000 +0200
+@@ -5,7 +5,7 @@
+ 
  
  
 -SUBDIRS = m4 support pixmaps po ipkg oRTP gsmlib lpc10-1.5 \
@@ -131,16 +149,3 @@
                  $(WIN32ACM_DIR) mediastreamer mediastreamer2\
  		media_api exosip coreapi console gnome share developer-docs
  
---- linphone-1.3.2/m4/exosip.m4.orig	2005-02-04 16:19:59.000000000 +0100
-+++ linphone-1.3.2/m4/exosip.m4	2006-03-23 11:56:57.063243000 +0100
-@@ -30,8 +30,8 @@
- esac
- 
- AC_CHECK_LIB(posix4,sem_open,[EXOSIP_LIBS="$EXOSIP_LIBS -lposix4 -mt"])
--AC_CHECK_LIB(nsl,nis_add,[EXOSIP_LIBS="$EXOSIP_LIBS -lnsl"])
--AC_CHECK_LIB(socket,sendto,[EXOSIP_LIBS="$EXOSIP_LIBS -lsocket"])
-+dnl AC_CHECK_LIB(nsl,nis_add,[EXOSIP_LIBS="$EXOSIP_LIBS -lnsl"])
-+AC_CHECK_FUNC(sendto,,[AC_CHECK_LIB(socket,sendto,[EXOSIP_LIBS="$EXOSIP_LIBS -lsocket"])])
- AC_CHECK_LIB(rt,clock_gettime,[EXOSIP_LIBS="$EXOSIP_LIBS -lrt"])
- dnl Checks for header files.
- AC_HEADER_STDC
