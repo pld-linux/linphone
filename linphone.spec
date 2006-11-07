@@ -157,7 +157,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/bonobo/servers/GNOME_LinphoneApplet.server
 %{_datadir}/gnome-2.0/ui/GNOME_LinphoneApplet.xml
 %{_datadir}/sounds/*
-%{_desktopdir}/*
+%{_desktopdir}/*.desktop
 %{_pixmapsdir}/*
 %{_mandir}/man1/*
 
