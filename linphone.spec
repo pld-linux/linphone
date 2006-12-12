@@ -2,20 +2,18 @@
 #  - split main package to few smaller (there is linphonec for console,
 #    auto-answering machine and linphone applet for gnome)
 #  - check why --enable-alsa doesn't require alsa-lib-devel
-#  - check if all this configure option I've set are really needed
 
 Summary:	Linphone Internet Phone
 Summary(pl):	Linphone - telefon internetowy
 Name:		linphone
-Version:	1.2.0
+Version:	1.5.1
 Release:	1
 License:	LGPL/GPL
 Group:		Applications/Communications
-Source0:	http://simon.morlat.free.fr/download/1.2.x/source/%{name}-%{version}.tar.gz
-# Source0-md5:	bd5e513a665ce2e381afce64d569c707
+Source0:	http://download.savannah.nongnu.org/releases/%{name}/1.5.x/source/%{name}-%{version}.tar.gz
+# Source0-md5:	196f817d77aba906e7c1a896f8501a0f
 Patch0:		%{name}-desktop.patch
 Patch1:		%{name}-automake.patch
-#Patch2:		%{name}-system-libs.patch
 URL:		http://www.linphone.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -28,10 +26,10 @@ BuildRequires:	libgnomeui-devel
 BuildRequires:	libgsm-devel >= 1.0.10
 BuildRequires:	libosip2-devel >= 2.2.0
 BuildRequires:	libtool >= 1:1.4.2-9
-#BuildRequires:	lpc10-devel >= 1.5
 BuildRequires:	pkgconfig
+BuildRequires:	readline-devel
 BuildRequires:	scrollkeeper
-BuildRequires:	speex-devel >= 1.0.0
+BuildRequires:	speex-devel >= 1.1.6
 BuildRequires:	xft-devel
 Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	/usr/bin/scrollkeeper-update
@@ -96,12 +94,9 @@ Statyczne wersje bibliotek Linphone.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-#%patch2 -p1
 
 %build
 rm -f missing
-# gettext 0.11.5 used
-#%%{__gettextize}
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
@@ -113,11 +108,22 @@ cd oRTP
 	# don't use -f here
 	automake -a -c --foreign
 cd ..
+
+# --enable-video conflicts with ffmpeg's swscaler :(
+#
 %configure \
 	--with-html-dir=%{_gtkdocdir} \
-	--enable-platform-gnome-2 \
 	--enable-alsa \
-	--enable-ipv6
+	--enable-gnome_ui \
+	--enable-ipv6 \
+	--enable-portaudio \
+	--disable-strict \
+	--disable-video \
+	--with-ffmpeg=%{_prefix} \
+	--with-gsm=%{_prefix} \
+	--with-osip=%{_prefix} \
+	--with-sdl=%{_prefix}
+
 %{__make}
 
 %install
