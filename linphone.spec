@@ -4,7 +4,7 @@
 #  - check if all this configure option I've set are really needed
 #  - separate libraries that do not require gnome into subpackages for Jingle support in kopete
 Summary:	Linphone Internet Phone
-Summary(pl.UTF-8):   Linphone - telefon internetowy
+Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
 Version:	1.3.5
 Release:	1
@@ -69,7 +69,7 @@ Główne cechy linphone:
 
 %package devel
 Summary:	Linphone Internet Phone - header files
-Summary(pl.UTF-8):   Telefon internetowy Linphone - pliki nagłówkowe
+Summary(pl.UTF-8):	Telefon internetowy Linphone - pliki nagłówkowe
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	alsa-lib-devel >= 0.9.0
@@ -91,7 +91,7 @@ Pliki dla programistów używających telefonu internetowego Linphone.
 
 %package static
 Summary:	Linphone static libraries
-Summary(pl.UTF-8):   Statyczne biblioteki Linphone
+Summary(pl.UTF-8):	Statyczne biblioteki Linphone
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
