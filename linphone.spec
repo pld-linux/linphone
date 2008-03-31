@@ -3,18 +3,20 @@
 #    auto-answering machine and linphone applet for gnome)
 #  - check if all this configure option I've set are really needed
 #  - separate libraries that do not require gnome into subpackages for Jingle support in kopete
+#  - separate ortp (is newer than current ortp.spec)
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
-Version:	1.3.5
-Release:	1
+Version:	2.1.1
+Release:	0.1
 License:	LGPL/GPL
 Group:		Applications/Communications
-Source0:	http://simon.morlat.free.fr/download/1.3.x/source/%{name}-%{version}.tar.gz
-# Source0-md5:	522b08a22c5e1de281676cddd3f2bcf6
-Patch0:		%{name}-desktop.patch
-Patch1:		%{name}-system-libs.patch
+Source0:	http://download.savannah.gnu.org/releases/linphone/stable/sources//%{name}-%{version}.tar.gz
+# Source0-md5:	130fb6048f84ee89f7c1a8a010ff1add
+#Patch0:		%{name}-desktop.patch
+#Patch1:		%{name}-system-libs.patch
 URL:		http://www.linphone.org/
+BuildRequires:	a52dec-libs-devel
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -30,14 +32,14 @@ BuildRequires:	libosip2-devel >= 2.2.0
 BuildRequires:	libsamplerate-devel >= 0.0.13
 BuildRequires:	libtool >= 1:1.4.2-9
 BuildRequires:	lpc10-devel >= 1.5
-BuildRequires:	ortp-devel >= 0.9.1
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.98
 BuildRequires:	scrollkeeper
 BuildRequires:	speex-devel >= 1.0.0
+BuildRequires:	srtp-devel
+Provides:	ortp = 0.14.2
 Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	/usr/bin/scrollkeeper-update
-Requires:	ortp >= 0.9.1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -80,8 +82,8 @@ Requires:	libgsm-devel >= 1.0.10
 Requires:	libosip2-devel >= 2.2.0
 Requires:	libsamplerate-devel >= 0.0.13
 Requires:	lpc10-devel >= 1.5
-Requires:	ortp-devel >= 0.9.1
 Requires:	speex-devel >= 1.0.0
+Provides:	ortp-devel = 0.14.2
 
 %description devel
 Development files for the Linphone Internet Phone.
@@ -94,6 +96,7 @@ Summary:	Linphone static libraries
 Summary(pl.UTF-8):	Statyczne biblioteki Linphone
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
+Provides:	ortp-static = 0.14.2
 
 %description static
 Static version of Linphone libraries.
@@ -103,8 +106,8 @@ Statyczne wersje bibliotek Linphone.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
+#%patch0 -p1
+#%patch1 -p1
 
 %build
 # requires .po file fixes
@@ -152,23 +155,31 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS BUGS ChangeLog NEWS README TODO
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/liblinphone.so.*.*.*
-%attr(755,root,root) %{_libdir}/linphone_applet
+%attr(755,root,root) %{_libdir}/libmediastreamer.so.*.*.*
+%attr(755,root,root) %{_libdir}/libortp.so.*.*.*
 %{_libdir}/mediastream
-%{_libdir}/bonobo/servers/GNOME_LinphoneApplet.server
-%{_datadir}/gnome-2.0/ui/GNOME_LinphoneApplet.xml
 %{_datadir}/sounds/*
 %{_desktopdir}/*.desktop
 %{_pixmapsdir}/*
+#%{_imagesdir}/*
 %{_mandir}/man1/*
+%lang(cs) %{_mandir}/cs/man1/*
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/liblinphone.so
+%attr(755,root,root) %{_libdir}/libmediastreamer.so
+%attr(755,root,root) %{_libdir}/libortp.so
 %{_libdir}/liblinphone.la
+%{_libdir}/libmediastreamer.la
+%{_libdir}/libortp.la
 %{_includedir}/linphone
-%{_gtkdocdir}/mediastreamer
+%{_includedir}/mediastreamer2
+%{_includedir}/ortp
 %{_pkgconfigdir}/*.pc
 
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/liblinphone.a
+%{_libdir}/libmediastreamer.a
+%{_libdir}/libortp.a
