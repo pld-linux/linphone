@@ -1,6 +1,6 @@
 --- linphone-1.2.0/share/linphone.desktop~	2006-01-23 08:43:33.000000000 +0100
 +++ linphone-1.2.0/share/linphone.desktop	2006-01-23 08:43:33.000000000 +0100
-@@ -1,10 +1,12 @@
+@@ -1,7 +1,9 @@
  [Desktop Entry]
 +Encoding=UTF-8
  Name=Linphone
@@ -12,13 +12,9 @@
 +Comment[pl]=Telefon internetowy Linphone
  Type=Application
  Exec=linphone
- Icon=linphone/linphone2.png
--Terminal=0
-+Terminal=false
- Categories=Application;Network;
 --- linphone-1.2.0/share/linphone_applet.desktop~	2006-01-23 08:43:33.000000000 +0100
 +++ linphone-1.2.0/share/linphone_applet.desktop	2006-01-23 08:43:33.000000000 +0100
-@@ -1,9 +1,11 @@
+@@ -1,8 +1,10 @@
  [Desktop Entry]
 +Encoding=UTF-8
  Name=Linphone Applet
@@ -31,6 +27,3 @@
  Type=Application
  Exec=linphone --applet --activate-goad-server=linphone_applet
  Icon=linphone/linphone2.png
--Terminal=0
-\ No newline at end of file
-+Terminal=false
