@@ -26,6 +26,7 @@ BuildRequires:	gnome-common >= 2.8.0
 BuildRequires:	gnome-panel-devel
 BuildRequires:	gtk-doc
 BuildRequires:	jack-audio-connection-kit-devel >= 0.15.0
+BuildRequires:	libeXosip2-devel
 BuildRequires:	libgnomeui-devel
 BuildRequires:	libgsm-devel >= 1.0.10
 BuildRequires:	libosip2-devel >= 2.2.0
@@ -37,9 +38,9 @@ BuildRequires:	rpmbuild(macros) >= 1.98
 BuildRequires:	scrollkeeper
 BuildRequires:	speex-devel >= 1.0.0
 BuildRequires:	srtp-devel
-Provides:	ortp = 0.14.2
 Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	/usr/bin/scrollkeeper-update
+Provides:	ortp = 0.14.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
