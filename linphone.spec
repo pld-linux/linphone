@@ -7,14 +7,12 @@
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
-Version:	2.1.1
+Version:	3.3.1
 Release:	0.1
 License:	LGPL/GPL
 Group:		Applications/Communications
 Source0:	http://download.savannah.gnu.org/releases/linphone/stable/sources//%{name}-%{version}.tar.gz
-# Source0-md5:	130fb6048f84ee89f7c1a8a010ff1add
-#Patch0:		%{name}-desktop.patch
-#Patch1:		%{name}-system-libs.patch
+# Source0-md5:	bf17ae27e89c5ed1aa17f2a0a83a3870
 URL:		http://www.linphone.org/
 BuildRequires:	a52dec-libs-devel
 BuildRequires:	alsa-lib-devel >= 0.9.0
@@ -107,8 +105,6 @@ Statyczne wersje bibliotek Linphone.
 
 %prep
 %setup -q
-#%patch0 -p1
-#%patch1 -p1
 
 %build
 # requires .po file fixes
@@ -132,11 +128,10 @@ install -d $RPM_BUILD_ROOT%{_desktopdir} \
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install share/linphone.desktop $RPM_BUILD_ROOT%{_desktopdir}
-install pixmaps/*.png pixmaps/*.xpm $RPM_BUILD_ROOT%{_pixmapsdir}
+install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
 
 # kill .desktop in GNOME1-specific location
-rm -rf $RPM_BUILD_ROOT%{_datadir}/gnome/apps
+#rm -rf $RPM_BUILD_ROOT%{_datadir}/gnome/apps
 
 %find_lang %{name} --with-gnome --all-name
 
@@ -156,12 +151,16 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS BUGS ChangeLog NEWS README TODO
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/liblinphone.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblinphone.so.?
 %attr(755,root,root) %{_libdir}/libmediastreamer.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libmediastreamer.so.?
 %attr(755,root,root) %{_libdir}/libortp.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libortp.so.?
 %{_libdir}/mediastream
 %{_datadir}/sounds/*
 %{_desktopdir}/*.desktop
-%{_pixmapsdir}/*
+%{_pixmapsdir}/linphone.png
+%{_pixmapsdir}/linphone
 #%{_imagesdir}/*
 %{_mandir}/man1/*
 %lang(cs) %{_mandir}/cs/man1/*
