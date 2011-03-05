@@ -3,7 +3,6 @@
 #    auto-answering machine and linphone applet for gnome)
 #  - check if all this configure option I've set are really needed
 #  - separate libraries that do not require gnome into subpackages for Jingle support in kopete
-#  - separate ortp (is newer than current ortp.spec)
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
@@ -157,8 +156,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/liblinphone.so.?
 %attr(755,root,root) %{_libdir}/libmediastreamer.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libmediastreamer.so.?
-%attr(755,root,root) %{_libdir}/libortp.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libortp.so.?
+# %attr(755,root,root) %{_libdir}/libortp.so.*.*.*
+# %attr(755,root,root) %ghost %{_libdir}/libortp.so.?
 %{_libdir}/mediastream
 %{_datadir}/sounds/*
 %{_desktopdir}/*.desktop
