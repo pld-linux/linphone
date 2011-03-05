@@ -7,7 +7,7 @@ Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
 Version:	3.4.2
-Release:	0.1
+Release:	0.3
 License:	LGPL/GPL
 Group:		Applications/Communications
 Source0:	http://download.savannah.gnu.org/releases/linphone/stable/sources//%{name}-%{version}.tar.gz
@@ -39,7 +39,7 @@ BuildRequires:	srtp-devel
 BuildRequires:	xorg-lib-libXv-devel
 Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	/usr/bin/scrollkeeper-update
-Provides:	ortp = 0.14.2
+Provides:	ortp = 0.16
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -83,7 +83,7 @@ Requires:	libosip2-devel >= 2.2.0
 Requires:	libsamplerate-devel >= 0.0.13
 Requires:	lpc10-devel >= 1.5
 Requires:	speex-devel >= 1.0.0
-Provides:	ortp-devel = 0.14.2
+Provides:	ortp-devel = 0.16
 
 %description devel
 Development files for the Linphone Internet Phone.
@@ -96,7 +96,7 @@ Summary:	Linphone static libraries
 Summary(pl.UTF-8):	Statyczne biblioteki Linphone
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
-Provides:	ortp-static = 0.14.2
+Provides:	ortp-static = 0.16
 
 %description static
 Static version of Linphone libraries.
@@ -156,8 +156,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/liblinphone.so.?
 %attr(755,root,root) %{_libdir}/libmediastreamer.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libmediastreamer.so.?
-# %attr(755,root,root) %{_libdir}/libortp.so.*.*.*
-# %attr(755,root,root) %ghost %{_libdir}/libortp.so.?
+%attr(755,root,root) %{_libdir}/libortp.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libortp.so.?
 %{_libdir}/mediastream
 %{_datadir}/sounds/*
 %{_desktopdir}/*.desktop
