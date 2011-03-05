@@ -14,28 +14,30 @@ Group:		Applications/Communications
 Source0:	http://download.savannah.gnu.org/releases/linphone/stable/sources//%{name}-%{version}.tar.gz
 # Source0-md5:	aaa5bb7c60d7cab2b1a63a1a42535d38
 URL:		http://www.linphone.org/
-BuildRequires:	a52dec-libs-devel
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	ffmpeg-devel >= 0.4.5
 BuildRequires:	gettext-devel
 BuildRequires:	gnome-common >= 2.8.0
-BuildRequires:	gnome-panel-devel
-BuildRequires:	gtk-doc
+BuildRequires:	gtk+2-devel
+BuildRequires:	intltool
 BuildRequires:	jack-audio-connection-kit-devel >= 0.15.0
 BuildRequires:	libeXosip2-devel
-BuildRequires:	libgnomeui-devel
 BuildRequires:	libgsm-devel >= 1.0.10
 BuildRequires:	libosip2-devel >= 2.2.0
 BuildRequires:	libsamplerate-devel >= 0.0.13
 BuildRequires:	libtool >= 1:1.4.2-9
-BuildRequires:	lpc10-devel >= 1.5
+BuildRequires:	libv4l-devel
+BuildRequires:	ncurses-devel
 BuildRequires:	pkgconfig
+BuildRequires:	pulseaudio-devel
+BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
 BuildRequires:	scrollkeeper
 BuildRequires:	speex-devel >= 1.0.0
 BuildRequires:	srtp-devel
+BuildRequires:	xorg-lib-libXv-devel
 Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	/usr/bin/scrollkeeper-update
 Provides:	ortp = 0.14.2
@@ -115,6 +117,7 @@ Statyczne wersje bibliotek Linphone.
 %{__autoheader}
 %{__automake}
 %configure \
+	LIBS="-lXext" \
 	--with-html-dir=%{_gtkdocdir} \
 	--enable-alsa \
 	--enable-ipv6
