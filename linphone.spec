@@ -6,12 +6,14 @@
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
-Version:	3.4.2
-Release:	0.3
+Version:	3.4.3
+Release:	1
 License:	LGPL/GPL
 Group:		Applications/Communications
 Source0:	http://download.savannah.gnu.org/releases/linphone/stable/sources//%{name}-%{version}.tar.gz
-# Source0-md5:	aaa5bb7c60d7cab2b1a63a1a42535d38
+# Source0-md5:	66e21f36d62c2094f7b4360262c46f20
+Patch0:		%{name}-chdir.patch
+Patch1:		%{name}-imgdir.patch
 URL:		http://www.linphone.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf
@@ -106,6 +108,8 @@ Statyczne wersje bibliotek Linphone.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
 
 %build
 # requires .po file fixes
@@ -135,6 +139,8 @@ install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
 # kill .desktop in GNOME1-specific location
 #rm -rf $RPM_BUILD_ROOT%{_datadir}/gnome/apps
 
+rm -r $RPM_BUILD_ROOT/usr/share/doc/{linphone,mediastreamer,ortp}
+
 %find_lang %{name} --with-gnome --all-name
 
 %clean
@@ -163,7 +169,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_desktopdir}/*.desktop
 %{_pixmapsdir}/linphone.png
 %{_pixmapsdir}/linphone
-#%{_imagesdir}/*
+%{_datadir}/linphone
 %{_mandir}/man1/*
 %lang(cs) %{_mandir}/cs/man1/*
 
