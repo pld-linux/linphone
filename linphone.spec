@@ -124,14 +124,14 @@ Statyczne wersje bibliotek Linphone.
 	--with-html-dir=%{_gtkdocdir} \
 	--enable-alsa \
 	--enable-ipv6
-%{__make}
+%{__make} -j 1
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_desktopdir} \
 	$RPM_BUILD_ROOT%{_pixmapsdir}
 
-%{__make} install \
+%{__make} -j 1 install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
