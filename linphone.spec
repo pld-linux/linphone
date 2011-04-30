@@ -14,6 +14,7 @@ Source0:	http://download.savannah.gnu.org/releases/linphone/stable/sources//%{na
 # Source0-md5:	66e21f36d62c2094f7b4360262c46f20
 Patch0:		%{name}-chdir.patch
 Patch1:		%{name}-imgdir.patch
+Patch2:		%{name}-nov4l.patch
 URL:		http://www.linphone.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf
@@ -110,28 +111,43 @@ Statyczne wersje bibliotek Linphone.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
-# requires .po file fixes
-#%%{__glib_gettextize}
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
 %{__autoheader}
 %{__automake}
+cd oRTP
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__autoheader}
+%{__automake}
+cd ..
+cd mediastreamer2
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__autoheader}
+%{__automake}
+cd ..
+
 %configure \
 	LIBS="-lXext" \
 	--with-html-dir=%{_gtkdocdir} \
 	--enable-alsa \
+	--disable-strict \
 	--enable-ipv6
-%{__make} -j 1
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_desktopdir} \
 	$RPM_BUILD_ROOT%{_pixmapsdir}
 
-%{__make} -j 1 install \
+%{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
