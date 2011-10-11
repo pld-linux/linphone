@@ -3,14 +3,27 @@
 #    auto-answering machine and linphone applet for gnome)
 #  - check if all this configure option I've set are really needed
 #  - separate libraries that do not require gnome into subpackages for Jingle support in kopete
+# - packages copies for "libmediastreamer.so.1", "libortp.so.8" libraries
+#   those should be installed to private path and LD_LIBARY_PATH setup with wrappers.
+#   without doing so do not stbr it to Th!
+#
+# Conditional build:
+%bcond_with	system_ortp	# use system ortp
+%bcond_with	system_mediastreamer	# use system mediastreamer
+
+%if "%{pld_release}" == "th"
+%if %{without system_ortp} || %{without system_mediastreamer}
+Blocked: fix todo first
+%endif
+%endif
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
 Version:	3.4.3
-Release:	2
+Release:	2.1
 License:	LGPL/GPL
 Group:		Applications/Communications
-Source0:	http://download.savannah.gnu.org/releases/linphone/stable/sources//%{name}-%{version}.tar.gz
+Source0:	http://download.savannah.gnu.org/releases/linphone/stable/sources/%{name}-%{version}.tar.gz
 # Source0-md5:	66e21f36d62c2094f7b4360262c46f20
 Patch0:		%{name}-chdir.patch
 Patch1:		%{name}-imgdir.patch
