@@ -154,6 +154,7 @@ cd ..
 	--with-html-dir=%{_gtkdocdir} \
 	--enable-alsa \
 	--disable-strict \
+	--enable-static \
 	--enable-ipv6 \
 	%{?with_system_mediastreamer:--enable-external-mediastreamer} \
 	%{?with_system_ortp:--enable-external-ortp}
