@@ -55,7 +55,6 @@ BuildRequires:	srtp-devel
 BuildRequires:	xorg-lib-libXv-devel
 Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	/usr/bin/scrollkeeper-update
-Provides:	ortp = 0.16
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -99,7 +98,6 @@ Requires:	libosip2-devel >= 2.2.0
 Requires:	libsamplerate-devel >= 0.0.13
 Requires:	lpc10-devel >= 1.5
 Requires:	speex-devel >= 1.0.0
-Provides:	ortp-devel = 0.16
 
 %description devel
 Development files for the Linphone Internet Phone.
@@ -112,7 +110,6 @@ Summary:	Linphone static libraries
 Summary(pl.UTF-8):	Statyczne biblioteki Linphone
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
-Provides:	ortp-static = 0.16
 
 %description static
 Static version of Linphone libraries.
