@@ -1,7 +1,7 @@
 # TODO:
 #  - check if all this configure option I've set are really needed
 #  - separate libraries that do not require gnome into subpackages for Jingle support in kopete
-# - packages copies for "libmediastreamer.so.1", "libortp.so.8" libraries
+# - if system_mediastreamerpackages copies for "libmediastreamer.so.1", "libortp.so.8" libraries
 #   those should be installed to private path and LD_LIBARY_PATH setup with wrappers.
 #   without doing so do not stbr it to Th!
 #
@@ -9,11 +9,6 @@
 %bcond_with	system_ortp	# use system ortp
 %bcond_with	system_mediastreamer	# use system mediastreamer
 
-%if "%{pld_release}" == "th"
-%if %{without system_ortp} || %{without system_mediastreamer}
-Blocked: fix todo first
-%endif
-%endif
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
@@ -54,6 +49,15 @@ BuildRequires:	xorg-lib-libXv-devel
 Requires(post,postun):	/usr/bin/scrollkeeper-update
 Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%if %{without system_ortp}
+%define		_noautoreq	libortp\.so.*
+%define		_noautoprov	libortp\.so.*
+%endif
+%if %{without system_mediastreamer}
+%define		_noautoreq	libmediastreamer\.so.*
+%define		_noautoprov	libmediastreamer\.so.*
+%endif
 
 %description
 Linphone is a web phone: it let you phone to your friends anywhere in
@@ -177,6 +181,26 @@ cd ..
 	--enable-ipv6 \
 	%{?with_system_mediastreamer:--enable-external-mediastreamer} \
 	%{?with_system_ortp:--enable-external-ortp}
+
+%if %{without system_ortp}
+cd oRTP
+%configure \
+	--enable-static \
+	--enable-ipv6 \
+	--libdir=%{_libdir}/%{name} \
+	--includedir=%{_libdir}/%{name}/include
+cd ..
+%endif
+%if %{without system_ortp}
+cd mediastreamer2
+%configure \
+	--enable-static \
+	--disable-libv4l \
+	--libdir=%{_libdir}/%{name} \
+	--includedir=%{_libdir}/%{name}/include
+cd ..
+%endif
+
 %{__make}
 
 %install
@@ -210,14 +234,17 @@ rm -rf $RPM_BUILD_ROOT
 %post
 /usr/bin/scrollkeeper-update
 
+%if %{without system_mediastreamer} || %{without system_ortp}
 %post libs
-/sbin/ldconfig
+/sbin/ldconfig %{_libdir}/%{name}
+%else
+%post libs -p /sbin/ldconfig
+%endif
 
 %postun
 /usr/bin/scrollkeeper-update
 
-%postun libs
-/sbin/ldconfig
+%postun libs -p /sbin/ldconfig
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
@@ -243,14 +270,17 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/liblinphone.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblinphone.so.?
+%if %{without system_mediastreamer} || %{without system_ortp}
+%dir %{_libdir}/%{name}
+%endif
 %if %{without system_mediastreamer}
-%attr(755,root,root) %{_libdir}/libmediastreamer.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libmediastreamer.so.?
-%{_libdir}/mediastream
+%attr(755,root,root) %{_libdir}/%{name}/libmediastreamer.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/%{name}/libmediastreamer.so.?
+%{_libdir}/%{name}/mediastream
 %endif
 %if %{without system_ortp}
-%attr(755,root,root) %{_libdir}/libortp.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libortp.so.?
+%attr(755,root,root) %{_libdir}/%{name}/libortp.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/%{name}/libortp.so.?
 %endif
 %{_datadir}/sounds/*
 
@@ -259,26 +289,30 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/liblinphone.so
 %{_includedir}/linphone
 %{_pkgconfigdir}/linphone.pc
+%{_libdir}/liblinphone.la
+%if %{without system_mediastreamer} || %{without system_ortp}
+%dir %{_libdir}/%{name}/include
+%dir %{_libdir}/%{name}/pkgconfig
+%endif
 %if %{without system_mediastreamer}
-%attr(755,root,root) %{_libdir}/libmediastreamer.so
-%{_libdir}/libmediastreamer.la
-%{_includedir}/mediastreamer2
-%{_pkgconfigdir}/mediastreamer.pc
+%attr(755,root,root) %{_libdir}/%{name}/libmediastreamer.so
+%{_libdir}/%{name}/libmediastreamer.la
+%{_libdir}/%{name}/include/mediastreamer2
+%{_libdir}/%{name}/pkgconfig/mediastreamer.pc
 %endif
 %if %{without system_ortp}
-%attr(755,root,root) %{_libdir}/libortp.so
-%{_libdir}/liblinphone.la
-%{_libdir}/libortp.la
-%{_includedir}/ortp
-%{_pkgconfigdir}/ortp.pc
+%attr(755,root,root) %{_libdir}/%{name}/libortp.so
+%{_libdir}/%{name}/libortp.la
+%{_libdir}/%{name}/include/ortp
+%{_libdir}/%{name}/pkgconfig/ortp.pc
 %endif
 
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/liblinphone.a
 %if %{without system_mediastreamer}
-%{_libdir}/libmediastreamer.a
+%{_libdir}/%{name}/libmediastreamer.a
 %endif
 %if %{without system_ortp}
-%{_libdir}/libortp.a
+%{_libdir}/%{name}/libortp.a
 %endif
