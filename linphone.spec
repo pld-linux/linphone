@@ -44,6 +44,8 @@ BuildRequires:	libosip2-devel >= 2.2.0
 BuildRequires:	libsamplerate-devel >= 0.0.13
 BuildRequires:	libtool >= 1:1.4.2-9
 BuildRequires:	libv4l-devel
+%{?with_system_ortp:BuildRequires:	ortp-devel}
+%{?with_system_mediastreamer:BuildRequires:	mediastreamer-devel}
 BuildRequires:	ncurses-devel
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
@@ -132,6 +134,7 @@ Statyczne wersje bibliotek Linphone.
 %{__autoconf}
 %{__autoheader}
 %{__automake}
+%if %{without system_ortp}
 cd oRTP
 %{__libtoolize}
 %{__aclocal}
@@ -139,6 +142,8 @@ cd oRTP
 %{__autoheader}
 %{__automake}
 cd ..
+%endif
+%if %{without system_ortp}
 cd mediastreamer2
 %{__libtoolize}
 %{__aclocal}
@@ -146,13 +151,16 @@ cd mediastreamer2
 %{__autoheader}
 %{__automake}
 cd ..
+%endif
 
 %configure \
 	LIBS="-lXext" \
 	--with-html-dir=%{_gtkdocdir} \
 	--enable-alsa \
 	--disable-strict \
-	--enable-ipv6
+	--enable-ipv6 \
+	%{?with_system_mediastreamer:--enable-external-mediastreamer} \
+	%{?with_system_ortp:--enable-external-ortp}
 %{__make}
 
 %install
@@ -168,7 +176,9 @@ install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
 # kill .desktop in GNOME1-specific location
 #rm -rf $RPM_BUILD_ROOT%{_datadir}/gnome/apps
 
-rm -r $RPM_BUILD_ROOT/usr/share/doc/{linphone,mediastreamer,ortp}
+rm -r $RPM_BUILD_ROOT/usr/share/doc/linphone
+%{!?with_system_mediastreamer:rm -r $RPM_BUILD_ROOT/usr/share/doc/mediastreamer}
+%{!?with_system_ortp:rm -r $RPM_BUILD_ROOT/usr/share/doc/ortp}
 
 %find_lang %{name} --with-gnome --all-name
 
@@ -189,11 +199,15 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/liblinphone.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblinphone.so.?
+%if %{without system_mediastreamer}
 %attr(755,root,root) %{_libdir}/libmediastreamer.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libmediastreamer.so.?
+%{_libdir}/mediastream
+%endif
+%if %{without system_ortp}
 %attr(755,root,root) %{_libdir}/libortp.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libortp.so.?
-%{_libdir}/mediastream
+%endif
 %{_datadir}/sounds/*
 %{_desktopdir}/*.desktop
 %{_pixmapsdir}/linphone.png
@@ -205,18 +219,28 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/liblinphone.so
+%{_includedir}/linphone
+%{_pkgconfigdir}/linphone.pc
+%if %{without system_mediastreamer}
 %attr(755,root,root) %{_libdir}/libmediastreamer.so
+%{_libdir}/libmediastreamer.la
+%{_includedir}/mediastreamer2
+%{_pkgconfigdir}/mediastreamer.pc
+%endif
+%if %{without system_ortp}
 %attr(755,root,root) %{_libdir}/libortp.so
 %{_libdir}/liblinphone.la
-%{_libdir}/libmediastreamer.la
 %{_libdir}/libortp.la
-%{_includedir}/linphone
-%{_includedir}/mediastreamer2
 %{_includedir}/ortp
-%{_pkgconfigdir}/*.pc
+%{_pkgconfigdir}/ortp.pc
+%endif
 
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/liblinphone.a
+%if %{without system_mediastreamer}
 %{_libdir}/libmediastreamer.a
+%endif
+%if %{without system_ortp}
 %{_libdir}/libortp.a
+%endif
