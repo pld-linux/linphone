@@ -6,8 +6,8 @@
 #   without doing so do not stbr it to Th!
 #
 # Conditional build:
-%bcond_with	system_ortp	# use system ortp
-%bcond_with	system_mediastreamer	# use system mediastreamer
+%bcond_without	system_ortp		# use custom ortp
+%bcond_without	system_mediastreamer	# use custom mediastreamer
 
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
