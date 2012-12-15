@@ -150,7 +150,6 @@ cd ..
 %endif
 
 %configure \
-	LIBS="-lXext" \
 	--with-html-dir=%{_gtkdocdir} \
 	--enable-alsa \
 	--disable-strict \
