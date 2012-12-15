@@ -19,15 +19,13 @@ Blocked: fix todo first
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
-Version:	3.4.3
-Release:	2.1
+Version:	3.5.2
+Release:	0.1
 License:	LGPL/GPL
 Group:		Applications/Communications
 Source0:	http://download.savannah.gnu.org/releases/linphone/stable/sources/%{name}-%{version}.tar.gz
-# Source0-md5:	66e21f36d62c2094f7b4360262c46f20
-Patch0:		%{name}-chdir.patch
-Patch1:		%{name}-imgdir.patch
-Patch2:		%{name}-nov4l.patch
+# Source0-md5:	4be6e940372dba1f6793aef849c1ff0d
+Patch0:		%{name}-imgdir.patch
 URL:		http://www.linphone.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf
@@ -125,8 +123,6 @@ Statyczne wersje bibliotek Linphone.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 %build
 %{__libtoolize}
