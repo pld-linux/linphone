@@ -1,6 +1,4 @@
 # TODO:
-#  - split main package to few smaller (there is linphonec for console,
-#    auto-answering machine and linphone applet for gnome)
 #  - check if all this configure option I've set are really needed
 #  - separate libraries that do not require gnome into subpackages for Jingle support in kopete
 # - packages copies for "libmediastreamer.so.1", "libortp.so.8" libraries
@@ -83,6 +81,19 @@ Główne cechy linphone:
 - wymaga karty dźwiękowej
 - jest wolnodostępnym oprogramowaniem (na licencji GPL)
 - ma dokumentację: pełny podręcznik dostępny z aplikacji.
+
+%package -n linphonec
+Summary:	Linphone Internet Phone console interface
+Summary(pl.UTF-8):	Linphone - telefon internetowy, interfejs konsolowy
+Group:		Applications/Communications
+Requires:	%{name}-libs = %{version}-%{release}
+
+%description -n linphonec
+Linphonec is the console version of  originally  Gnome  internet  phone
+Linphone.
+
+%description -n linphonec -l pl.UTF-8
+Linphonec to konsolowa wersja GNOME'owego telefonu internetowego Linphone.
 
 %package libs
 Summary:	Linphone libraries
@@ -187,6 +198,10 @@ rm -r $RPM_BUILD_ROOT/usr/share/doc/linphone
 
 mv $RPM_BUILD_ROOT%{_localedir}/{nb_NO,nb}
 
+# the executable is missing, so the manual is useless
+rm $RPM_BUILD_ROOT%{_mandir}/man1/sipomatic.1*
+rm $RPM_BUILD_ROOT%{_mandir}/cs/man1/sipomatic.1*
+
 %find_lang %{name} --with-gnome --all-name
 
 %clean
@@ -207,13 +222,22 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS BUGS ChangeLog NEWS README TODO
-%attr(755,root,root) %{_bindir}/*
-%{_desktopdir}/*.desktop
+%attr(755,root,root) %{_bindir}/linphone
+%{_desktopdir}/linphone.desktop
 %{_pixmapsdir}/linphone.png
 %{_pixmapsdir}/linphone
 %{_datadir}/linphone
-%{_mandir}/man1/*
-%lang(cs) %{_mandir}/cs/man1/*
+%{_mandir}/man1/linphone.1*
+%lang(cs) %{_mandir}/cs/man1/linphone.1*
+
+%files -n linphonec
+%defattr(644,root,root,755)
+%doc AUTHORS BUGS ChangeLog NEWS README TODO
+%attr(755,root,root) %{_bindir}/linphonec
+%attr(755,root,root) %{_bindir}/linphonecsh
+%{_mandir}/man1/linphonec.1*
+%{_mandir}/man1/linphonecsh.1*
+%lang(cs) %{_mandir}/cs/man1/linphonec.1*
 
 %files libs
 %defattr(644,root,root,755)
