@@ -176,6 +176,8 @@ rm -r $RPM_BUILD_ROOT/usr/share/doc/linphone
 %{!?with_system_mediastreamer:rm -r $RPM_BUILD_ROOT/usr/share/doc/mediastreamer}
 %{!?with_system_ortp:rm -r $RPM_BUILD_ROOT/usr/share/doc/ortp}
 
+mv $RPM_BUILD_ROOT%{_localedir}/{nb_NO,nb}
+
 %find_lang %{name} --with-gnome --all-name
 
 %clean
