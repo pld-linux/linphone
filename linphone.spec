@@ -53,8 +53,8 @@ BuildRequires:	scrollkeeper
 BuildRequires:	speex-devel >= 1.0.0
 BuildRequires:	srtp-devel
 BuildRequires:	xorg-lib-libXv-devel
-Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	/usr/bin/scrollkeeper-update
+Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -84,11 +84,23 @@ Główne cechy linphone:
 - jest wolnodostępnym oprogramowaniem (na licencji GPL)
 - ma dokumentację: pełny podręcznik dostępny z aplikacji.
 
+%package libs
+Summary:	Linphone libraries
+Summary(pl.UTF-8):	Biblioteki Linphone
+Group:		Libraries
+Requires(post,postun):	/sbin/ldconfig
+
+%description libs
+Linphone libraries.
+
+%description libs -l pl.UTF-8
+Biblioteki Linphone.
+
 %package devel
 Summary:	Linphone Internet Phone - header files
 Summary(pl.UTF-8):	Telefon internetowy Linphone - pliki nagłówkowe
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-libs = %{version}-%{release}
 Requires:	alsa-lib-devel >= 0.9.0
 Requires:	glib2-devel >= 2.0.0
 Requires:	gtk-doc-common
@@ -182,16 +194,29 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /usr/bin/scrollkeeper-update
+
+%post libs
 /sbin/ldconfig
 
 %postun
 /usr/bin/scrollkeeper-update
+
+%postun libs
 /sbin/ldconfig
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS BUGS ChangeLog NEWS README TODO
 %attr(755,root,root) %{_bindir}/*
+%{_desktopdir}/*.desktop
+%{_pixmapsdir}/linphone.png
+%{_pixmapsdir}/linphone
+%{_datadir}/linphone
+%{_mandir}/man1/*
+%lang(cs) %{_mandir}/cs/man1/*
+
+%files libs
+%defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/liblinphone.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblinphone.so.?
 %if %{without system_mediastreamer}
@@ -204,12 +229,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libortp.so.?
 %endif
 %{_datadir}/sounds/*
-%{_desktopdir}/*.desktop
-%{_pixmapsdir}/linphone.png
-%{_pixmapsdir}/linphone
-%{_datadir}/linphone
-%{_mandir}/man1/*
-%lang(cs) %{_mandir}/cs/man1/*
 
 %files devel
 %defattr(644,root,root,755)
