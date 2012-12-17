@@ -51,13 +51,14 @@ Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %if %{without system_ortp}
-%define		_noautoreq	libortp\.so.*
-%define		_noautoprov	libortp\.so.*
+%define		_noautoreq_1	libortp\.so.*
 %endif
 %if %{without system_mediastreamer}
-%define		_noautoreq	libmediastreamer\.so.*
-%define		_noautoprov	libmediastreamer\.so.*
+%define		_noautoreq_2	libmediastreamer\.so.*
 %endif
+
+%define		_noautoreq	%{?_noautoreq_1} %{?_noautoreq_2}
+%define		_noautoprov	%{?_noautoreq}
 
 %description
 Linphone is a web phone: it let you phone to your friends anywhere in
