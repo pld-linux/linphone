@@ -12,13 +12,14 @@
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
-Version:	3.5.2
+Version:	3.6.0
 Release:	1
 License:	LGPL/GPL
 Group:		Applications/Communications
 Source0:	http://download.savannah.gnu.org/releases/linphone/stable/sources/%{name}-%{version}.tar.gz
-# Source0-md5:	4be6e940372dba1f6793aef849c1ff0d
+# Source0-md5:	9a101854bb16034b39096e18c80ceb78
 Patch0:		%{name}-imgdir.patch
+Patch1:		%{name}-exosip-4.0.0.patch
 URL:		http://www.linphone.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf
@@ -29,14 +30,14 @@ BuildRequires:	gnome-common >= 2.8.0
 BuildRequires:	gtk+2-devel
 BuildRequires:	intltool
 BuildRequires:	jack-audio-connection-kit-devel >= 0.15.0
-BuildRequires:	libeXosip2-devel
+BuildRequires:	libeXosip2-devel >= 4.0.0
 BuildRequires:	libgsm-devel >= 1.0.10
 BuildRequires:	libosip2-devel >= 2.2.0
 BuildRequires:	libsamplerate-devel >= 0.0.13
 BuildRequires:	libtool >= 1:1.4.2-9
 BuildRequires:	libv4l-devel
 %{?with_system_ortp:BuildRequires:	ortp-devel}
-%{?with_system_mediastreamer:BuildRequires:	mediastreamer-devel}
+%{?with_system_mediastreamer:BuildRequires:	mediastreamer-devel >= 2.9.0}
 BuildRequires:	ncurses-devel
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
@@ -147,7 +148,11 @@ Statyczne wersje bibliotek Linphone.
 
 %prep
 %setup -q
+
+find '(' -name '*.c' -o -name '*.h' ')' -print0 | xargs -0 %{__sed} -i -e 's,\r$,,'
+
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize}
@@ -217,7 +222,7 @@ install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
 # kill .desktop in GNOME1-specific location
 #rm -rf $RPM_BUILD_ROOT%{_datadir}/gnome/apps
 
-rm -r $RPM_BUILD_ROOT/usr/share/doc/linphone
+rm -r $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 %{!?with_system_mediastreamer:rm -r $RPM_BUILD_ROOT/usr/share/doc/mediastreamer}
 %{!?with_system_ortp:rm -r $RPM_BUILD_ROOT/usr/share/doc/ortp}
 
@@ -226,6 +231,9 @@ mv $RPM_BUILD_ROOT%{_localedir}/{nb_NO,nb}
 # the executable is missing, so the manual is useless
 rm $RPM_BUILD_ROOT%{_mandir}/man1/sipomatic.1*
 rm $RPM_BUILD_ROOT%{_mandir}/cs/man1/sipomatic.1*
+
+# some tests
+rm $RPM_BUILD_ROOT%{_bindir}/*_test
 
 %find_lang %{name} --with-gnome --all-name
 
@@ -271,6 +279,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/liblinphone.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblinphone.so.?
+%attr(755,root,root) %{_libdir}/liblpc2xml.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblpc2xml.so.?
+%attr(755,root,root) %{_libdir}/libxml2lpc.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libxml2lpc.so.?
 %if %{without system_mediastreamer} || %{without system_ortp}
 %dir %{_libdir}/%{name}
 %endif
@@ -287,10 +299,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
+%doc coreapi/help/doc/html
 %attr(755,root,root) %{_libdir}/liblinphone.so
+%attr(755,root,root) %{_libdir}/liblpc2xml.so
+%attr(755,root,root) %{_libdir}/libxml2lpc.so
 %{_includedir}/linphone
 %{_pkgconfigdir}/linphone.pc
 %{_libdir}/liblinphone.la
+%{_libdir}/liblpc2xml.la
+%{_libdir}/libxml2lpc.la
 %if %{without system_mediastreamer} || %{without system_ortp}
 %dir %{_libdir}/%{name}/include
 %dir %{_libdir}/%{name}/pkgconfig
@@ -311,6 +328,8 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/liblinphone.a
+%{_libdir}/liblpc2xml.a
+%{_libdir}/libxml2lpc.a
 %if %{without system_mediastreamer}
 %{_libdir}/%{name}/libmediastreamer.a
 %endif
