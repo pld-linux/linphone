@@ -1,11 +1,14 @@
 # TODO:
-#  - check if all this configure option I've set are really needed
-#  - separate libraries that do not require gnome into subpackages for Jingle support in kopete
+# - --enable-tunnel (BR: pkgconfig(tunnel) >= 0.3.3)
+# - fill in dependencies for !system_ortp, !system_mediastreamer
+# - check if all this configure option I've set are really needed
+# - separate libraries that do not require gnome into subpackages for Jingle support in kopete
 # - if system_mediastreamerpackages copies for "libmediastreamer.so.1", "libortp.so.8" libraries
 #   those should be installed to private path and LD_LIBARY_PATH setup with wrappers.
 #   without doing so do not stbr it to Th!
 #
 # Conditional build:
+%bcond_without	openssl			# SSL support
 %bcond_without	system_ortp		# use custom ortp
 %bcond_without	system_mediastreamer	# use custom mediastreamer
 
@@ -14,41 +17,55 @@ Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
 Version:	3.6.0
 Release:	1
-License:	LGPL/GPL
+License:	GPL v2+
 Group:		Applications/Communications
 Source0:	http://download.savannah.gnu.org/releases/linphone/stable/sources/%{name}-%{version}.tar.gz
 # Source0-md5:	9a101854bb16034b39096e18c80ceb78
 Patch0:		%{name}-imgdir.patch
 Patch1:		%{name}-exosip-4.0.0.patch
+Patch2:		%{name}-sh.patch
 URL:		http://www.linphone.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
-BuildRequires:	autoconf
+BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
+BuildRequires:	doxygen
 BuildRequires:	ffmpeg-devel >= 0.4.5
 BuildRequires:	gettext-devel
 BuildRequires:	gnome-common >= 2.8.0
-BuildRequires:	gtk+2-devel
-BuildRequires:	intltool
-BuildRequires:	jack-audio-connection-kit-devel >= 0.15.0
+BuildRequires:	gtk+2-devel >= 2:2.22.0
+BuildRequires:	intltool >= 0.40
 BuildRequires:	libeXosip2-devel >= 4.0.0
-BuildRequires:	libgsm-devel >= 1.0.10
-BuildRequires:	libosip2-devel >= 2.2.0
-BuildRequires:	libsamplerate-devel >= 0.0.13
-BuildRequires:	libtool >= 1:1.4.2-9
+BuildRequires:	libnotify-devel >= 0.7.0
+BuildRequires:	libosip2-devel >= 3.3.0
+BuildRequires:	libsoup-devel >= 2.26
+BuildRequires:	libstdc++-devel
+BuildRequires:	libtool >= 2:2
+BuildRequires:	libupnp-devel >= 1.6
+BuildRequires:	libupnp-devel < 1.7
 BuildRequires:	libv4l-devel
+BuildRequires:	libxml2-devel >= 2.0
 %{?with_system_ortp:BuildRequires:	ortp-devel}
 %{?with_system_mediastreamer:BuildRequires:	mediastreamer-devel >= 2.9.0}
 BuildRequires:	ncurses-devel
+%{?with_openssl:BuildRequires:	openssl-devel >= 0.9.8}
 BuildRequires:	pkgconfig
-BuildRequires:	pulseaudio-devel
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
 BuildRequires:	scrollkeeper
-BuildRequires:	speex-devel >= 1.0.0
+BuildRequires:	speex-devel >= 1.1.6
+BuildRequires:	sqlite3-devel >= 3.7.0
 BuildRequires:	srtp-devel
+BuildRequires:	udev-devel
+BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXv-devel
+%if %{without system_mediastreamer}
+BuildRequires:	libgsm-devel >= 1.0.10
+BuildRequires:	pulseaudio-devel
+%endif
 Requires(post,postun):	/usr/bin/scrollkeeper-update
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	gtk+2 >= 2:2.22.0
+Requires:	libnotify >= 0.7.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %if %{without system_ortp}
@@ -95,17 +112,23 @@ Group:		Applications/Communications
 Requires:	%{name}-libs = %{version}-%{release}
 
 %description -n linphonec
-Linphonec is the console version of  originally  Gnome  internet  phone
+Linphonec is the console version of originally GNOME Internet phone
 Linphone.
 
 %description -n linphonec -l pl.UTF-8
-Linphonec to konsolowa wersja GNOME'owego telefonu internetowego Linphone.
+Linphonec to konsolowa wersja telefonu internetowego Linphone
+pochodzącego z GNOME.
 
 %package libs
 Summary:	Linphone libraries
 Summary(pl.UTF-8):	Biblioteki Linphone
 Group:		Libraries
 Requires(post,postun):	/sbin/ldconfig
+Requires:	libeXosip2 >= 4.0.0
+Requires:	libosip2 >= 3.3.0
+Requires:	libsoup-devel >= 2.26
+%{?with_system_mediastreamer:Requires:	mediastreamer >= 2.9.0}
+Requires:	sqlite3 >= 3.7.0
 
 %description libs
 Linphone libraries.
@@ -121,12 +144,23 @@ Requires:	%{name}-libs = %{version}-%{release}
 Requires:	alsa-lib-devel >= 0.9.0
 Requires:	glib2-devel >= 2.0.0
 Requires:	gtk-doc-common
-Requires:	jack-audio-connection-kit-devel >= 0.15.0
+Requires:	libeXosip2-devel >= 4.0.0
+Requires:	libosip2-devel >= 3.3.0
+Requires:	libsoup-devel >= 2.26
+Requires:	libstdc++-devel
+Requires:	libupnp-devel >= 1.6
+Requires:	libupnp-devel < 1.7
+Requires:	libxml2-devel >= 2.0
+%{?with_system_mediastreamer:Requires:	mediastreamer-devel >= 2.9.0}
+%{?with_system_ortp:Requires:	ortp-devel}
+Requires:	speex-devel >= 1.1.6
+Requires:	sqlite3-devel >= 3.7.0
+Requires:	srtp-devel
+Requires:	xorg-lib-libX11-devel
+Requires:	xorg-lib-libXv-devel
+%if %{without system_mediastreamer}
 Requires:	libgsm-devel >= 1.0.10
-Requires:	libosip2-devel >= 2.2.0
-Requires:	libsamplerate-devel >= 0.0.13
-Requires:	lpc10-devel >= 1.5
-Requires:	speex-devel >= 1.0.0
+%endif
 
 %description devel
 Development files for the Linphone Internet Phone.
@@ -153,6 +187,7 @@ find '(' -name '*.c' -o -name '*.h' ')' -print0 | xargs -0 %{__sed} -i -e 's,\r$
 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__libtoolize}
@@ -182,12 +217,16 @@ cd ..
 %configure \
 	--with-html-dir=%{_gtkdocdir} \
 	--enable-alsa \
-	--disable-strict \
-	--enable-static \
-	--enable-ipv6 \
 	%{?with_system_mediastreamer:--enable-external-mediastreamer} \
-	%{?with_system_ortp:--enable-external-ortp}
+	%{?with_system_ortp:--enable-external-ortp} \
+	--enable-ipv6 \
+	--disable-silent-rules \
+	%{?with_openssl:--enable-ssl} \
+	--enable-static \
+	--disable-strict
 
+# although main configure already calls {oRTP,mediastreamer2}/configure,
+# reconfigure them with different dirs
 %if %{without system_ortp}
 cd oRTP
 %configure \
@@ -222,18 +261,18 @@ install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
 # kill .desktop in GNOME1-specific location
 #rm -rf $RPM_BUILD_ROOT%{_datadir}/gnome/apps
 
-rm -r $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
+%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 %{!?with_system_mediastreamer:rm -r $RPM_BUILD_ROOT/usr/share/doc/mediastreamer}
 %{!?with_system_ortp:rm -r $RPM_BUILD_ROOT/usr/share/doc/ortp}
 
 mv $RPM_BUILD_ROOT%{_localedir}/{nb_NO,nb}
 
 # the executable is missing, so the manual is useless
-rm $RPM_BUILD_ROOT%{_mandir}/man1/sipomatic.1*
-rm $RPM_BUILD_ROOT%{_mandir}/cs/man1/sipomatic.1*
+%{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/sipomatic.1*
+%{__rm} $RPM_BUILD_ROOT%{_mandir}/cs/man1/sipomatic.1*
 
 # some tests
-rm $RPM_BUILD_ROOT%{_bindir}/*_test
+%{__rm} $RPM_BUILD_ROOT%{_bindir}/*_test
 
 %find_lang %{name} --with-gnome --all-name
 
@@ -278,11 +317,11 @@ rm -rf $RPM_BUILD_ROOT
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/liblinphone.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblinphone.so.?
+%attr(755,root,root) %ghost %{_libdir}/liblinphone.so.5
 %attr(755,root,root) %{_libdir}/liblpc2xml.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblpc2xml.so.?
+%attr(755,root,root) %ghost %{_libdir}/liblpc2xml.so.0
 %attr(755,root,root) %{_libdir}/libxml2lpc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libxml2lpc.so.?
+%attr(755,root,root) %ghost %{_libdir}/libxml2lpc.so.0
 %if %{without system_mediastreamer} || %{without system_ortp}
 %dir %{_libdir}/%{name}
 %endif
@@ -295,7 +334,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/%{name}/libortp.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/%{name}/libortp.so.?
 %endif
-%{_datadir}/sounds/*
+%{_datadir}/sounds/linphone
 
 %files devel
 %defattr(644,root,root,755)
