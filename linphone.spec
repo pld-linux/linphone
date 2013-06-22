@@ -15,12 +15,12 @@
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
-Version:	3.6.0
+Version:	3.6.1
 Release:	1
 License:	GPL v2+
 Group:		Applications/Communications
-Source0:	http://download.savannah.gnu.org/releases/linphone/stable/sources/%{name}-%{version}.tar.gz
-# Source0-md5:	9a101854bb16034b39096e18c80ceb78
+Source0:	http://download-mirror.savannah.gnu.org/releases/linphone/stable/sources/%{name}-%{version}.tar.gz
+# Source0-md5:	f59b99ec2501ebbb02969c885be4c4c5
 Patch0:		%{name}-imgdir.patch
 Patch1:		%{name}-exosip-4.0.0.patch
 Patch2:		%{name}-sh.patch
@@ -44,7 +44,7 @@ BuildRequires:	libupnp-devel >= 1.6
 BuildRequires:	libupnp-devel < 1.7
 BuildRequires:	libv4l-devel
 BuildRequires:	libxml2-devel >= 2.0
-%{?with_system_ortp:BuildRequires:	ortp-devel}
+%{?with_system_ortp:BuildRequires:	ortp-devel >= 0.22.0}
 %{?with_system_mediastreamer:BuildRequires:	mediastreamer-devel >= 2.9.0}
 BuildRequires:	ncurses-devel
 %{?with_openssl:BuildRequires:	openssl-devel >= 0.9.8}
@@ -128,6 +128,7 @@ Requires:	libeXosip2 >= 4.0.0
 Requires:	libosip2 >= 3.3.0
 Requires:	libsoup-devel >= 2.26
 %{?with_system_mediastreamer:Requires:	mediastreamer >= 2.9.0}
+%{?with_system_ortp:Requires:	ortp >= 0.22.0}
 Requires:	sqlite3 >= 3.7.0
 
 %description libs
@@ -152,7 +153,7 @@ Requires:	libupnp-devel >= 1.6
 Requires:	libupnp-devel < 1.7
 Requires:	libxml2-devel >= 2.0
 %{?with_system_mediastreamer:Requires:	mediastreamer-devel >= 2.9.0}
-%{?with_system_ortp:Requires:	ortp-devel}
+%{?with_system_ortp:Requires:	ortp-devel >= 0.22.0}
 Requires:	speex-devel >= 1.1.6
 Requires:	sqlite3-devel >= 3.7.0
 Requires:	srtp-devel
