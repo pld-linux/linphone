@@ -1,11 +1,30 @@
---- linphone-3.6.0/configure.ac.orig	2013-05-30 10:08:31.000000000 +0200
-+++ linphone-3.6.0/configure.ac	2013-06-21 21:43:50.405687603 +0200
-@@ -673,7 +673,7 @@
+diff -dur linphone-3.7.0.orig/configure.ac linphone-3.7.0/configure.ac
+--- linphone-3.7.0.orig/configure.ac	2014-02-20 11:16:31.000000000 +0100
++++ linphone-3.7.0/configure.ac	2014-06-06 14:47:59.000000000 +0200
+@@ -736,7 +736,7 @@
  AM_CONDITIONAL(BUILD_MSG_STORAGE, test x$enable_msg_storage = xtrue)
  if test x$enable_msg_storage != xfalse; then
- 	PKG_CHECK_MODULES(SQLITE3,[ sqlite3 >= 3.7.0],[
+ 	PKG_CHECK_MODULES(SQLITE3,[ sqlite3 >= 3.6.0],[
 -		SQLITE3_CFLAGS+="-DMSG_STORAGE_ENABLED"
 +		SQLITE3_CFLAGS="$SQLITE3_CFLAGS -DMSG_STORAGE_ENABLED"
  		AC_SUBST(SQLITE3_CFLAGS)
  		AC_SUBST(SQLITE3_LIBS)
  		enable_msg_storage=true
+@@ -838,7 +838,7 @@
+                 [
+                         AC_CHECK_LIB(cunit,CU_add_suite,[
+                                 found_cunit=yes
+-                                CUNIT_LIBS+=" -lcunit"
++                                CUNIT_LIBS="$CUNIT_LIBS -lcunit"
+                         ])
+ 
+                 ])
+@@ -847,7 +847,7 @@
+ case "$target_os" in
+ 	*darwin*)
+ 		#hack for macport
+-		CUNIT_LIBS+=" -lncurses"
++		CUNIT_LIBS="$CUNIT_LIBS -lncurses"
+ 	;;
+ esac
+ AM_CONDITIONAL([BUILD_CUNIT_TESTS], [test x$found_cunit = xyes && test x$tests_enabled != xfalse])

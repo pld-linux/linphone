@@ -15,15 +15,14 @@
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
-Version:	3.6.1
-Release:	3
+Version:	3.7.0
+Release:	1
 License:	GPL v2+
 Group:		Applications/Communications
-Source0:	http://download-mirror.savannah.gnu.org/releases/linphone/stable/sources/%{name}-%{version}.tar.gz
-# Source0-md5:	f59b99ec2501ebbb02969c885be4c4c5
+Source0:	http://download-mirror.savannah.gnu.org/releases/linphone/3.7.x/sources/%{name}-%{version}.tar.gz
+# Source0-md5:	6978492712bdacd452e375254d6033ae
 Patch0:		%{name}-imgdir.patch
-Patch1:		%{name}-exosip-4.0.0.patch
-Patch2:		%{name}-sh.patch
+Patch1:		%{name}-sh.patch
 URL:		http://www.linphone.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
@@ -34,9 +33,8 @@ BuildRequires:	gettext-devel
 BuildRequires:	gnome-common >= 2.8.0
 BuildRequires:	gtk+2-devel >= 2:2.22.0
 BuildRequires:	intltool >= 0.40
-BuildRequires:	libeXosip2-devel >= 4.0.0
+BuildRequires:	belle-sip-devel >= 1.3.0
 BuildRequires:	libnotify-devel >= 0.7.0
-BuildRequires:	libosip2-devel >= 3.3.0
 BuildRequires:	libsoup-devel >= 2.26
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2
@@ -124,8 +122,7 @@ Summary:	Linphone libraries
 Summary(pl.UTF-8):	Biblioteki Linphone
 Group:		Libraries
 Requires(post,postun):	/sbin/ldconfig
-Requires:	libeXosip2 >= 4.0.0
-Requires:	libosip2 >= 3.3.0
+Requires:	belle-sip >= 1.3.0
 Requires:	libsoup-devel >= 2.26
 %{?with_system_mediastreamer:Requires:	mediastreamer >= 2.9.0}
 %{?with_system_ortp:Requires:	ortp >= 0.22.0}
@@ -145,8 +142,7 @@ Requires:	%{name}-libs = %{version}-%{release}
 Requires:	alsa-lib-devel >= 0.9.0
 Requires:	glib2-devel >= 2.0.0
 Requires:	gtk-doc-common
-Requires:	libeXosip2-devel >= 4.0.0
-Requires:	libosip2-devel >= 3.3.0
+Requires:	belle-sip-devel >= 1.3.0
 Requires:	libsoup-devel >= 2.26
 Requires:	libstdc++-devel
 Requires:	libupnp-devel >= 1.6
@@ -188,7 +184,6 @@ find '(' -name '*.c' -o -name '*.h' ')' -print0 | xargs -0 %{__sed} -i -e 's,\r$
 
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
 %{__libtoolize}
@@ -247,7 +242,10 @@ cd mediastreamer2
 cd ..
 %endif
 
-%{__make}
+%{__make} \
+	GITDESCRIBE=/bin/true \
+	GIT_TAG=%{version}
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -255,12 +253,11 @@ install -d $RPM_BUILD_ROOT%{_desktopdir} \
 	$RPM_BUILD_ROOT%{_pixmapsdir}
 
 %{__make} install \
+	GITDESCRIBE=/bin/true \
+	GIT_TAG=%{version} \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
-
-# kill .desktop in GNOME1-specific location
-#rm -rf $RPM_BUILD_ROOT%{_datadir}/gnome/apps
 
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 %{!?with_system_mediastreamer:rm -r $RPM_BUILD_ROOT/usr/share/doc/mediastreamer}
@@ -274,6 +271,9 @@ mv $RPM_BUILD_ROOT%{_localedir}/{nb_NO,nb}
 
 # some tests
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/*_test
+
+install -d $RPM_BUILD_ROOT%{_examplesdir}
+mv $RPM_BUILD_ROOT%{_datadir}/tutorials/%{name} $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 %find_lang %{name} --with-gnome --all-name
 
@@ -318,11 +318,7 @@ rm -rf $RPM_BUILD_ROOT
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/liblinphone.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblinphone.so.5
-%attr(755,root,root) %{_libdir}/liblpc2xml.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblpc2xml.so.0
-%attr(755,root,root) %{_libdir}/libxml2lpc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libxml2lpc.so.0
+%attr(755,root,root) %ghost %{_libdir}/liblinphone.so.6
 %if %{without system_mediastreamer} || %{without system_ortp}
 %dir %{_libdir}/%{name}
 %endif
@@ -341,13 +337,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc coreapi/help/doc/html
 %attr(755,root,root) %{_libdir}/liblinphone.so
-%attr(755,root,root) %{_libdir}/liblpc2xml.so
-%attr(755,root,root) %{_libdir}/libxml2lpc.so
+%attr(755,root,root) %{_bindir}/lp-gen-wrappers
 %{_includedir}/linphone
 %{_pkgconfigdir}/linphone.pc
 %{_libdir}/liblinphone.la
-%{_libdir}/liblpc2xml.la
-%{_libdir}/libxml2lpc.la
 %if %{without system_mediastreamer} || %{without system_ortp}
 %dir %{_libdir}/%{name}/include
 %dir %{_libdir}/%{name}/pkgconfig
@@ -364,12 +357,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/include/ortp
 %{_libdir}/%{name}/pkgconfig/ortp.pc
 %endif
+%{_examplesdir}/%{name}-%{version}
 
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/liblinphone.a
-%{_libdir}/liblpc2xml.a
-%{_libdir}/libxml2lpc.a
 %if %{without system_mediastreamer}
 %{_libdir}/%{name}/libmediastreamer.a
 %endif
