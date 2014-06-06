@@ -27,25 +27,25 @@ URL:		http://www.linphone.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
+BuildRequires:	belle-sip-devel >= 1.3.0
 BuildRequires:	doxygen
 BuildRequires:	ffmpeg-devel >= 0.4.5
 BuildRequires:	gettext-devel
 BuildRequires:	gnome-common >= 2.8.0
 BuildRequires:	gtk+2-devel >= 2:2.22.0
 BuildRequires:	intltool >= 0.40
-BuildRequires:	belle-sip-devel >= 1.3.0
 BuildRequires:	libnotify-devel >= 0.7.0
 BuildRequires:	libsoup-devel >= 2.26
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2
-BuildRequires:	libupnp-devel >= 1.6
 BuildRequires:	libupnp-devel < 1.7
+BuildRequires:	libupnp-devel >= 1.6
 BuildRequires:	libv4l-devel
 BuildRequires:	libxml2-devel >= 2.0
-%{?with_system_ortp:BuildRequires:	ortp-devel >= 0.22.0}
 %{?with_system_mediastreamer:BuildRequires:	mediastreamer-devel >= 2.9.0}
 BuildRequires:	ncurses-devel
 %{?with_openssl:BuildRequires:	openssl-devel >= 0.9.8}
+%{?with_system_ortp:BuildRequires:	ortp-devel >= 0.22.0}
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
@@ -124,8 +124,8 @@ Group:		Libraries
 Requires(post,postun):	/sbin/ldconfig
 Requires:	belle-sip >= 1.3.0
 Requires:	libsoup-devel >= 2.26
-%{?with_system_mediastreamer:Requires:	mediastreamer >= 2.9.0}
-%{?with_system_ortp:Requires:	ortp >= 0.22.0}
+%{?with_system_mediastreamer:Requires:	mediastreamer:Requires:	mediastreamer >= 2.9.0}
+%{?with_system_ortp:Requires:	ortp:Requires:	ortp >= 0.22.0}
 Requires:	sqlite3 >= 3.7.0
 
 %description libs
@@ -140,13 +140,13 @@ Summary(pl.UTF-8):	Telefon internetowy Linphone - pliki nagłówkowe
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	alsa-lib-devel >= 0.9.0
+Requires:	belle-sip-devel >= 1.3.0
 Requires:	glib2-devel >= 2.0.0
 Requires:	gtk-doc-common
-Requires:	belle-sip-devel >= 1.3.0
 Requires:	libsoup-devel >= 2.26
 Requires:	libstdc++-devel
-Requires:	libupnp-devel >= 1.6
 Requires:	libupnp-devel < 1.7
+Requires:	libupnp-devel >= 1.6
 Requires:	libxml2-devel >= 2.0
 %{?with_system_mediastreamer:Requires:	mediastreamer-devel >= 2.9.0}
 %{?with_system_ortp:Requires:	ortp-devel >= 0.22.0}
@@ -260,8 +260,8 @@ install -d $RPM_BUILD_ROOT%{_desktopdir} \
 install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
 
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-%{!?with_system_mediastreamer:rm -r $RPM_BUILD_ROOT/usr/share/doc/mediastreamer}
-%{!?with_system_ortp:rm -r $RPM_BUILD_ROOT/usr/share/doc/ortp}
+%{!?with_system_mediastreamer:rm -r $RPM_BUILD_ROOT%{_docdir}/mediastreamer}
+%{!?with_system_ortp:rm -r $RPM_BUILD_ROOT%{_docdir}/ortp}
 
 mv $RPM_BUILD_ROOT%{_localedir}/{nb_NO,nb}
 
@@ -281,7 +281,7 @@ mv $RPM_BUILD_ROOT%{_datadir}/tutorials/%{name} $RPM_BUILD_ROOT%{_examplesdir}/%
 rm -rf $RPM_BUILD_ROOT
 
 %post
-/usr/bin/scrollkeeper-update
+%{_bindir}/scrollkeeper-update
 
 %if %{without system_mediastreamer} || %{without system_ortp}
 %post libs
@@ -291,7 +291,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %postun
-/usr/bin/scrollkeeper-update
+%{_bindir}/scrollkeeper-update
 
 %postun libs -p /sbin/ldconfig
 
