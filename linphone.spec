@@ -8,6 +8,7 @@
 #   without doing so do not stbr it to Th!
 #
 # Conditional build:
+%bcond_without	ldap			# LDAP support
 %bcond_without	openssl			# SSL support
 %bcond_without	system_ortp		# use custom ortp
 %bcond_without	system_mediastreamer	# use custom mediastreamer
@@ -26,8 +27,9 @@ Patch1:		%{name}-sh.patch
 URL:		http://www.linphone.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
-BuildRequires:	automake
+BuildRequires:	automake >= 1:1.9
 BuildRequires:	belle-sip-devel >= 1.3.0
+%{?with_ldap:BuildRequires:	cyrus-sasl-devel >= 2}
 BuildRequires:	doxygen
 BuildRequires:	ffmpeg-devel >= 0.4.5
 BuildRequires:	gettext-devel
@@ -42,17 +44,18 @@ BuildRequires:	libupnp-devel < 1.7
 BuildRequires:	libupnp-devel >= 1.6
 BuildRequires:	libv4l-devel
 BuildRequires:	libxml2-devel >= 2.0
-%{?with_system_mediastreamer:BuildRequires:	mediastreamer-devel >= 2.9.0}
+%{?with_system_mediastreamer:BuildRequires:	mediastreamer-devel >= 2.10.0}
 BuildRequires:	ncurses-devel
+%{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_openssl:BuildRequires:	openssl-devel >= 0.9.8}
-%{?with_system_ortp:BuildRequires:	ortp-devel >= 0.22.0}
+%{?with_system_ortp:BuildRequires:	ortp-devel >= 0.23.0}
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
 BuildRequires:	scrollkeeper
 BuildRequires:	speex-devel >= 1.1.6
 BuildRequires:	sqlite3-devel >= 3.7.0
-BuildRequires:	srtp-devel
+%{!?with_system_ortp:BuildRequires:	srtp-devel}
 BuildRequires:	udev-devel
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXv-devel
@@ -124,8 +127,8 @@ Group:		Libraries
 Requires(post,postun):	/sbin/ldconfig
 Requires:	belle-sip >= 1.3.0
 Requires:	libsoup-devel >= 2.26
-%{?with_system_mediastreamer:Requires:	mediastreamer:Requires:	mediastreamer >= 2.9.0}
-%{?with_system_ortp:Requires:	ortp:Requires:	ortp >= 0.22.0}
+%{?with_system_mediastreamer:Requires:	mediastreamer >= 2.10.0}
+%{?with_system_ortp:Requires:	ortp >= 0.23.0}
 Requires:	sqlite3 >= 3.7.0
 
 %description libs
@@ -148,8 +151,8 @@ Requires:	libstdc++-devel
 Requires:	libupnp-devel < 1.7
 Requires:	libupnp-devel >= 1.6
 Requires:	libxml2-devel >= 2.0
-%{?with_system_mediastreamer:Requires:	mediastreamer-devel >= 2.9.0}
-%{?with_system_ortp:Requires:	ortp-devel >= 0.22.0}
+%{?with_system_mediastreamer:Requires:	mediastreamer-devel >= 2.10.0}
+%{?with_system_ortp:Requires:	ortp-devel >= 0.23.0}
 Requires:	speex-devel >= 1.1.6
 Requires:	sqlite3-devel >= 3.7.0
 Requires:	srtp-devel
@@ -216,6 +219,7 @@ cd ..
 	%{?with_system_mediastreamer:--enable-external-mediastreamer} \
 	%{?with_system_ortp:--enable-external-ortp} \
 	--enable-ipv6 \
+	%{?with_ldap:--enable-ldap} \
 	--disable-silent-rules \
 	%{?with_openssl:--enable-ssl} \
 	--enable-static \
@@ -260,8 +264,8 @@ install -d $RPM_BUILD_ROOT%{_desktopdir} \
 install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
 
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-%{!?with_system_mediastreamer:rm -r $RPM_BUILD_ROOT%{_docdir}/mediastreamer}
-%{!?with_system_ortp:rm -r $RPM_BUILD_ROOT%{_docdir}/ortp}
+%{!?with_system_mediastreamer:%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/mediastreamer}
+%{!?with_system_ortp:%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/ortp}
 
 mv $RPM_BUILD_ROOT%{_localedir}/{nb_NO,nb}
 
