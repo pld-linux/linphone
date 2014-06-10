@@ -17,13 +17,14 @@ Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
 Version:	3.7.0
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Applications/Communications
 Source0:	http://download-mirror.savannah.gnu.org/releases/linphone/3.7.x/sources/%{name}-%{version}.tar.gz
 # Source0-md5:	6978492712bdacd452e375254d6033ae
 Patch0:		%{name}-imgdir.patch
 Patch1:		%{name}-sh.patch
+Patch2:		displayname_use_after_free.patch
 URL:		http://www.linphone.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
@@ -187,6 +188,7 @@ find '(' -name '*.c' -o -name '*.h' ')' -print0 | xargs -0 %{__sed} -i -e 's,\r$
 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__libtoolize}
