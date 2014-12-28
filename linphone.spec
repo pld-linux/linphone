@@ -33,7 +33,7 @@ BuildRequires:	belle-sip-devel >= 1.3.0
 %{?with_ldap:BuildRequires:	cyrus-sasl-devel >= 2}
 BuildRequires:	doxygen
 BuildRequires:	ffmpeg-devel >= 0.4.5
-BuildRequires:	gettext-devel
+BuildRequires:	gettext-tools
 BuildRequires:	gnome-common >= 2.8.0
 BuildRequires:	gtk+2-devel >= 2:2.22.0
 BuildRequires:	intltool >= 0.40
