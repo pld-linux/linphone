@@ -54,7 +54,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
 BuildRequires:	scrollkeeper
-BuildRequires:	speex-devel >= 1.1.6
+BuildRequires:	speex-devel >= 1:1.1.6
 BuildRequires:	sqlite3-devel >= 3.7.0
 %{!?with_system_ortp:BuildRequires:	srtp-devel}
 BuildRequires:	udev-devel
@@ -155,7 +155,7 @@ Requires:	libupnp-devel >= 1.6
 Requires:	libxml2-devel >= 2.0
 %{?with_system_mediastreamer:Requires:	mediastreamer-devel >= 2.10.0}
 %{?with_system_ortp:Requires:	ortp-devel >= 0.23.0}
-Requires:	speex-devel >= 1.1.6
+Requires:	speex-devel >= 1:1.1.6
 Requires:	sqlite3-devel >= 3.7.0
 Requires:	srtp-devel
 Requires:	xorg-lib-libX11-devel
