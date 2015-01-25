@@ -63,6 +63,7 @@ BuildRequires:	xorg-lib-libXv-devel
 %if %{without system_mediastreamer}
 BuildRequires:	libgsm-devel >= 1.0.10
 BuildRequires:	pulseaudio-devel
+BuildRequires:	speexdsp-devel >= 1.2-beta3
 %endif
 Requires(post,postun):	/usr/bin/scrollkeeper-update
 Requires:	%{name}-libs = %{version}-%{release}
@@ -161,6 +162,7 @@ Requires:	xorg-lib-libX11-devel
 Requires:	xorg-lib-libXv-devel
 %if %{without system_mediastreamer}
 Requires:	libgsm-devel >= 1.0.10
+Requires:	speexdsp-devel >= 1.2-beta3
 %endif
 
 %description devel
