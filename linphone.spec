@@ -16,15 +16,14 @@
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
-Version:	3.7.0
-Release:	2
+Version:	3.8.5
+Release:	1
 License:	GPL v2+
 Group:		Applications/Communications
-Source0:	http://download-mirror.savannah.gnu.org/releases/linphone/3.7.x/sources/%{name}-%{version}.tar.gz
-# Source0-md5:	6978492712bdacd452e375254d6033ae
+Source0:	http://download-mirror.savannah.gnu.org/releases/linphone/3.8.x/sources/%{name}-%{version}.tar.gz
+# Source0-md5:	fbc551c36350eb0414acef49926baf39
 Patch0:		%{name}-imgdir.patch
 Patch1:		%{name}-sh.patch
-Patch2:		displayname_use_after_free.patch
 URL:		http://www.linphone.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
@@ -190,7 +189,6 @@ find '(' -name '*.c' -o -name '*.h' ')' -print0 | xargs -0 %{__sed} -i -e 's,\r$
 
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
 %{__libtoolize}
@@ -307,12 +305,16 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS BUGS ChangeLog NEWS README TODO
 %attr(755,root,root) %{_bindir}/linphone
+%attr(755,root,root) %{_bindir}/lp-autoanswer
+%{_desktopdir}/audio-assistant.desktop
 %{_desktopdir}/linphone.desktop
 %{_pixmapsdir}/linphone.png
 %{_pixmapsdir}/linphone
+%{_iconsdir}/*/*/apps/linphone.png
 %{_datadir}/linphone
 %{_mandir}/man1/linphone.1*
 %lang(cs) %{_mandir}/cs/man1/linphone.1*
+%{_datadir}/appdata/linphone.appdata.xml
 
 %files -n linphonec
 %defattr(644,root,root,755)
@@ -326,7 +328,9 @@ rm -rf $RPM_BUILD_ROOT
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/liblinphone.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblinphone.so.6
+%attr(755,root,root) %ghost %{_libdir}/liblinphone.so.7
+%attr(755,root,root) %{_libdir}/liblinphonetester.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblinphonetester.so.0
 %if %{without system_mediastreamer} || %{without system_ortp}
 %dir %{_libdir}/%{name}
 %endif
@@ -345,10 +349,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc coreapi/help/doc/html
 %attr(755,root,root) %{_libdir}/liblinphone.so
+%attr(755,root,root) %{_libdir}/liblinphonetester.so
 %attr(755,root,root) %{_bindir}/lp-gen-wrappers
 %{_includedir}/linphone
 %{_pkgconfigdir}/linphone.pc
 %{_libdir}/liblinphone.la
+%{_libdir}/liblinphonetester.la
 %if %{without system_mediastreamer} || %{without system_ortp}
 %dir %{_libdir}/%{name}/include
 %dir %{_libdir}/%{name}/pkgconfig
@@ -370,6 +376,7 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/liblinphone.a
+%{_libdir}/liblinphonetester.a
 %if %{without system_mediastreamer}
 %{_libdir}/%{name}/libmediastreamer.a
 %endif

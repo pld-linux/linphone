@@ -1,16 +1,23 @@
-diff -dur linphone-3.7.0.orig/configure.ac linphone-3.7.0/configure.ac
---- linphone-3.7.0.orig/configure.ac	2014-02-20 11:16:31.000000000 +0100
-+++ linphone-3.7.0/configure.ac	2014-06-06 14:47:59.000000000 +0200
-@@ -736,7 +736,7 @@
- AM_CONDITIONAL(BUILD_MSG_STORAGE, test x$enable_msg_storage = xtrue)
- if test x$enable_msg_storage != xfalse; then
- 	PKG_CHECK_MODULES(SQLITE3,[ sqlite3 >= 3.6.0],[
+diff -dur -x '*~' -x '*.orig' linphone-3.8.5.orig/configure.ac linphone-3.8.5/configure.ac
+--- linphone-3.8.5.orig/configure.ac	2015-06-30 17:05:45.000000000 +0200
++++ linphone-3.8.5/configure.ac	2015-07-10 08:30:31.000000000 +0200
+@@ -867,12 +867,12 @@
+ 	PKG_CHECK_MODULES(SQLITE3,[sqlite3 >= 3.6.0],[found_sqlite=yes],[found_sqlite=no])
+ 	if test "$found_sqlite" = "no"; then
+ 		dnl Check the lib presence in case the PKG-CONFIG version is not found
+-		AC_CHECK_LIB(sqlite3, sqlite3_open, [SQLITE3_LIBS+=" -lsqlite3 "; found_sqlite=yes], [foo=bar])
++		AC_CHECK_LIB(sqlite3, sqlite3_open, [SQLITE3_LIBS="$SQLITE3_LIBS -lsqlite3 "; found_sqlite=yes], [foo=bar])
+ 	fi
+ 	if test "$found_sqlite" = "yes"; then
 -		SQLITE3_CFLAGS+="-DMSG_STORAGE_ENABLED"
 +		SQLITE3_CFLAGS="$SQLITE3_CFLAGS -DMSG_STORAGE_ENABLED"
- 		AC_SUBST(SQLITE3_CFLAGS)
- 		AC_SUBST(SQLITE3_LIBS)
+ 		if test "$build_macos" = "yes" -o "$ios_found" = "yes"; then
+-			SQLITE3_LIBS+=" -liconv"
++			SQLITE3_LIBS="$SQLITE3_LIBS -liconv"
+ 		fi
  		enable_msg_storage=true
-@@ -838,7 +838,7 @@
+ 	else
+@@ -945,7 +945,7 @@
                  [
                          AC_CHECK_LIB(cunit,CU_add_suite,[
                                  found_cunit=yes
@@ -19,7 +26,7 @@ diff -dur linphone-3.7.0.orig/configure.ac linphone-3.7.0/configure.ac
                          ])
  
                  ])
-@@ -847,7 +847,7 @@
+@@ -954,7 +954,7 @@
  case "$target_os" in
  	*darwin*)
  		#hack for macport
