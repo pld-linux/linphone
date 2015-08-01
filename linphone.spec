@@ -10,6 +10,7 @@
 # Conditional build:
 %bcond_without	ldap			# LDAP support
 %bcond_without	openssl			# SSL support
+%bcond_without	static_libs		# static libraries
 %bcond_without	system_ortp		# use custom ortp
 %bcond_without	system_mediastreamer	# use custom mediastreamer
 
@@ -20,7 +21,7 @@ Version:	3.8.5
 Release:	1
 License:	GPL v2+
 Group:		Applications/Communications
-Source0:	http://download-mirror.savannah.gnu.org/releases/linphone/3.8.x/sources/%{name}-%{version}.tar.gz
+Source0:	http://linphone.org/releases/sources/linphone/%{name}-%{version}.tar.gz
 # Source0-md5:	fbc551c36350eb0414acef49926baf39
 Patch0:		%{name}-imgdir.patch
 Patch1:		%{name}-sh.patch
@@ -28,45 +29,43 @@ URL:		http://www.linphone.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.9
-BuildRequires:	belle-sip-devel >= 1.3.0
+BuildRequires:	belle-sip-devel >= 1.4.0
 %{?with_ldap:BuildRequires:	cyrus-sasl-devel >= 2}
 BuildRequires:	doxygen
 BuildRequires:	ffmpeg-devel >= 0.4.5
 BuildRequires:	gettext-tools
+BuildRequires:	glib2-devel >= 1:2.26.0
 BuildRequires:	gnome-common >= 2.8.0
 BuildRequires:	gtk+2-devel >= 2:2.22.0
 BuildRequires:	intltool >= 0.40
 BuildRequires:	libnotify-devel >= 0.7.0
-BuildRequires:	libsoup-devel >= 2.26
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2
 BuildRequires:	libupnp-devel < 1.7
 BuildRequires:	libupnp-devel >= 1.6
 BuildRequires:	libv4l-devel
 BuildRequires:	libxml2-devel >= 2.0
-%{?with_system_mediastreamer:BuildRequires:	mediastreamer-devel >= 2.10.0}
+%{?with_system_mediastreamer:BuildRequires:	mediastreamer-devel >= 2.11.0}
 BuildRequires:	ncurses-devel
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_openssl:BuildRequires:	openssl-devel >= 0.9.8}
-%{?with_system_ortp:BuildRequires:	ortp-devel >= 0.23.0}
+%{?with_system_ortp:BuildRequires:	ortp-devel >= 0.24.0}
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
-BuildRequires:	scrollkeeper
 BuildRequires:	speex-devel >= 1:1.1.6
 BuildRequires:	sqlite3-devel >= 3.7.0
 %{!?with_system_ortp:BuildRequires:	srtp-devel}
 BuildRequires:	udev-devel
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXv-devel
+BuildRequires:	zlib-devel >= 1.2.3
 %if %{without system_mediastreamer}
 BuildRequires:	libgsm-devel >= 1.0.10
 BuildRequires:	pulseaudio-devel
 BuildRequires:	speexdsp-devel >= 1.2-beta3
 %endif
-Requires(post,postun):	/usr/bin/scrollkeeper-update
 Requires:	%{name}-libs = %{version}-%{release}
-Requires:	gtk+2 >= 2:2.22.0
 Requires:	libnotify >= 0.7.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -126,10 +125,11 @@ Summary:	Linphone libraries
 Summary(pl.UTF-8):	Biblioteki Linphone
 Group:		Libraries
 Requires(post,postun):	/sbin/ldconfig
-Requires:	belle-sip >= 1.3.0
-Requires:	libsoup-devel >= 2.26
-%{?with_system_mediastreamer:Requires:	mediastreamer >= 2.10.0}
-%{?with_system_ortp:Requires:	ortp >= 0.23.0}
+Requires:	belle-sip >= 1.4.0
+Requires:	glib2 >= 1:2.26.0
+Requires:	gtk+2 >= 2:2.22.0
+%{?with_system_mediastreamer:Requires:	mediastreamer >= 2.11.0}
+%{?with_system_ortp:Requires:	ortp >= 0.24.0}
 Requires:	sqlite3 >= 3.7.0
 
 %description libs
@@ -144,16 +144,15 @@ Summary(pl.UTF-8):	Telefon internetowy Linphone - pliki nagłówkowe
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	alsa-lib-devel >= 0.9.0
-Requires:	belle-sip-devel >= 1.3.0
-Requires:	glib2-devel >= 2.0.0
-Requires:	gtk-doc-common
-Requires:	libsoup-devel >= 2.26
+Requires:	belle-sip-devel >= 1.4.0
+Requires:	glib2-devel >= 1:2.26.0
+Requires:	gtk+2 >= 2:2.22.0
 Requires:	libstdc++-devel
 Requires:	libupnp-devel < 1.7
 Requires:	libupnp-devel >= 1.6
 Requires:	libxml2-devel >= 2.0
-%{?with_system_mediastreamer:Requires:	mediastreamer-devel >= 2.10.0}
-%{?with_system_ortp:Requires:	ortp-devel >= 0.23.0}
+%{?with_system_mediastreamer:Requires:	mediastreamer-devel >= 2.11.0}
+%{?with_system_ortp:Requires:	ortp-devel >= 0.24.0}
 Requires:	speex-devel >= 1:1.1.6
 Requires:	sqlite3-devel >= 3.7.0
 Requires:	srtp-devel
@@ -185,7 +184,7 @@ Statyczne wersje bibliotek Linphone.
 %prep
 %setup -q
 
-find '(' -name '*.c' -o -name '*.h' ')' -print0 | xargs -0 %{__sed} -i -e 's,\r$,,'
+#find '(' -name '*.c' -o -name '*.h' ')' -print0 | xargs -0 %{__sed} -i -e 's,\r$,,'
 
 %patch0 -p1
 %patch1 -p1
@@ -224,7 +223,7 @@ cd ..
 	%{?with_ldap:--enable-ldap} \
 	--disable-silent-rules \
 	%{?with_openssl:--enable-ssl} \
-	--enable-static \
+	%{?with_static_libs:--enable-static} \
 	--disable-strict
 
 # although main configure already calls {oRTP,mediastreamer2}/configure,
@@ -232,26 +231,25 @@ cd ..
 %if %{without system_ortp}
 cd oRTP
 %configure \
-	--enable-static \
-	--enable-ipv6 \
+	--includedir=%{_libdir}/%{name}/include \
 	--libdir=%{_libdir}/%{name} \
-	--includedir=%{_libdir}/%{name}/include
+	--enable-ipv6 \
+	%{?with_static_libs:--enable-static}
 cd ..
 %endif
 %if %{without system_ortp}
 cd mediastreamer2
 %configure \
-	--enable-static \
-	--disable-libv4l \
+	--includedir=%{_libdir}/%{name}/include \
 	--libdir=%{_libdir}/%{name} \
-	--includedir=%{_libdir}/%{name}/include
+	--disable-libv4l \
+	%{?with_static_libs:--enable-static}
 cd ..
 %endif
 
 %{__make} \
 	GITDESCRIBE=/bin/true \
 	GIT_TAG=%{version}
-
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -269,7 +267,7 @@ install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
 %{!?with_system_mediastreamer:%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/mediastreamer}
 %{!?with_system_ortp:%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/ortp}
 
-mv $RPM_BUILD_ROOT%{_localedir}/{nb_NO,nb}
+%{__mv} $RPM_BUILD_ROOT%{_localedir}/{nb_NO,nb}
 
 # the executable is missing, so the manual is useless
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/sipomatic.1*
@@ -279,15 +277,12 @@ mv $RPM_BUILD_ROOT%{_localedir}/{nb_NO,nb}
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/*_test
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}
-mv $RPM_BUILD_ROOT%{_datadir}/tutorials/%{name} $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+%{__mv} $RPM_BUILD_ROOT%{_datadir}/tutorials/%{name} $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 %find_lang %{name} --with-gnome --all-name
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
-%post
-%{_bindir}/scrollkeeper-update
 
 %if %{without system_mediastreamer} || %{without system_ortp}
 %post libs
@@ -295,9 +290,6 @@ rm -rf $RPM_BUILD_ROOT
 %else
 %post libs -p /sbin/ldconfig
 %endif
-
-%postun
-%{_bindir}/scrollkeeper-update
 
 %postun libs -p /sbin/ldconfig
 
@@ -310,11 +302,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_desktopdir}/linphone.desktop
 %{_pixmapsdir}/linphone.png
 %{_pixmapsdir}/linphone
-%{_iconsdir}/*/*/apps/linphone.png
+%{_iconsdir}/hicolor/48x48/apps/linphone.png
+%{_datadir}/appdata/linphone.appdata.xml
 %{_datadir}/linphone
 %{_mandir}/man1/linphone.1*
 %lang(cs) %{_mandir}/cs/man1/linphone.1*
-%{_datadir}/appdata/linphone.appdata.xml
 
 %files -n linphonec
 %defattr(644,root,root,755)
@@ -373,6 +365,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %{_examplesdir}/%{name}-%{version}
 
+%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/liblinphone.a
@@ -382,4 +375,5 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %if %{without system_ortp}
 %{_libdir}/%{name}/libortp.a
+%endif
 %endif
