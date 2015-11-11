@@ -17,14 +17,13 @@
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
-Version:	3.8.5
+Version:	3.9.0
 Release:	1
 License:	GPL v2+
 Group:		Applications/Communications
 Source0:	http://linphone.org/releases/sources/linphone/%{name}-%{version}.tar.gz
-# Source0-md5:	fbc551c36350eb0414acef49926baf39
-Patch0:		%{name}-imgdir.patch
-Patch1:		%{name}-sh.patch
+# Source0-md5:	9d299621d97a5e9397ec29511f5998f7
+Patch0:		%{name}-sh.patch
 URL:		http://www.linphone.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
@@ -51,6 +50,7 @@ BuildRequires:	ncurses-devel
 %{?with_openssl:BuildRequires:	openssl-devel >= 0.9.8}
 %{?with_system_ortp:BuildRequires:	ortp-devel >= 0.24.0}
 BuildRequires:	pkgconfig
+BuildRequires:	polarssl-devel >= 1.3
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
 BuildRequires:	speex-devel >= 1:1.1.6
@@ -183,11 +183,7 @@ Statyczne wersje bibliotek Linphone.
 
 %prep
 %setup -q
-
-#find '(' -name '*.c' -o -name '*.h' ')' -print0 | xargs -0 %{__sed} -i -e 's,\r$,,'
-
 %patch0 -p1
-%patch1 -p1
 
 %build
 %{__libtoolize}
@@ -302,7 +298,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_desktopdir}/linphone.desktop
 %{_pixmapsdir}/linphone.png
 %{_pixmapsdir}/linphone
+%{_iconsdir}/hicolor/48x48/actions/linphone-*.png
 %{_iconsdir}/hicolor/48x48/apps/linphone.png
+%{_iconsdir}/hicolor/48x48/status/linphone-*.png
+%{_iconsdir}/hicolor/scalable/actions/linphone-*.svg
+%{_iconsdir}/hicolor/scalable/status/linphone-*.svg
 %{_datadir}/appdata/linphone.appdata.xml
 %{_datadir}/linphone
 %{_mandir}/man1/linphone.1*
@@ -320,7 +320,7 @@ rm -rf $RPM_BUILD_ROOT
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/liblinphone.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblinphone.so.7
+%attr(755,root,root) %ghost %{_libdir}/liblinphone.so.8
 %attr(755,root,root) %{_libdir}/liblinphonetester.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblinphonetester.so.0
 %if %{without system_mediastreamer} || %{without system_ortp}
