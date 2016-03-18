@@ -44,7 +44,7 @@ BuildRequires:	libupnp-devel < 1.7
 BuildRequires:	libupnp-devel >= 1.6
 BuildRequires:	libv4l-devel
 BuildRequires:	libxml2-devel >= 2.0
-%{?with_system_mediastreamer:BuildRequires:	mediastreamer-devel >= 2.11.0}
+%{?with_system_mediastreamer:BuildRequires:	mediastreamer-devel >= 2.12.1}
 BuildRequires:	ncurses-devel
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_openssl:BuildRequires:	openssl-devel >= 0.9.8}
