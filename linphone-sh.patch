@@ -1,6 +1,20 @@
---- linphone-3.9.0/configure.ac.orig	2015-11-02 14:54:03.145448862 +0100
-+++ linphone-3.9.0/configure.ac	2015-11-11 20:35:39.387229789 +0100
-@@ -891,12 +891,12 @@
+--- linphone-3.10.2/configure.ac~	2016-08-30 16:20:09.000000000 +0200
++++ linphone-3.10.2/configure.ac	2018-09-26 15:05:58.553546486 +0200
+@@ -898,11 +898,11 @@ if test x$enable_vcard != xfalse; then
+ 	if test "$found_vcard" = "no"; then
+ 		dnl Check the lib presence in case the PKG-CONFIG version is not found
+ 		AC_LANG_CPLUSPLUS
+-		AC_CHECK_LIB(belcard, main, [BELCARD_LIBS+=" -lbelr -lbelcard"; found_vcard=yes], [foo=bar])
++		AC_CHECK_LIB(belcard, main, [BELCARD_LIBS="$BELCARD_LIBS -lbelr -lbelcard"; found_vcard=yes], [foo=bar])
+ 		AC_LANG_C
+ 	fi
+ 	if test "$found_vcard" = "yes"; then
+-		BELCARD_CFLAGS+=" -DVCARD_ENABLED"
++		BELCARD_CFLAGS="$BELCARD_CFLAGS -DVCARD_ENABLED"
+ 		enable_vcard=true
+ 	else
+ 		if test x$enable_vcard = xtrue; then
+@@ -931,12 +931,12 @@ if test x$enable_sqlite_storage != xfals
  	PKG_CHECK_MODULES(SQLITE3,[sqlite3 >= 3.6.0],[found_sqlite=yes],[found_sqlite=no])
  	if test "$found_sqlite" = "no"; then
  		dnl Check the lib presence in case the PKG-CONFIG version is not found
@@ -8,45 +22,11 @@
 +		AC_CHECK_LIB(sqlite3, sqlite3_open, [SQLITE3_LIBS="$SQLITE3_LIBS -lsqlite3 "; found_sqlite=yes], [foo=bar])
  	fi
  	if test "$found_sqlite" = "yes"; then
--		SQLITE3_CFLAGS+=" -DMSG_STORAGE_ENABLED"
-+		SQLITE3_CFLAGS="$SQLITE3_CFLAGS -DMSG_STORAGE_ENABLED"
+-		SQLITE3_CFLAGS+=" -DSQLITE_STORAGE_ENABLED"
++		SQLITE3_CFLAGS="$SQLITE3_CFLAGS -DSQLITE_STORAGE_ENABLED"
  		if test "$build_macos" = "yes" -o "$ios_found" = "yes"; then
 -			SQLITE3_LIBS+=" -liconv"
 +			SQLITE3_LIBS="$SQLITE3_LIBS -liconv"
  		fi
  		enable_msg_storage=true
  	else
-@@ -926,12 +926,12 @@
-         PKG_CHECK_MODULES(SQLITE3,[sqlite3 >= 3.6.0],[found_sqlite=yes],[found_sqlite=no])
-         if test "$found_sqlite" = "no"; then
-                 dnl Check the lib presence in case the PKG-CONFIG version is not found
--                AC_CHECK_LIB(sqlite3, sqlite3_open, [SQLITE3_LIBS+=" -lsqlite3 "; found_sqlite=yes], [foo=bar])
-+                AC_CHECK_LIB(sqlite3, sqlite3_open, [SQLITE3_LIBS="$SQLITE3_LIBS -lsqlite3 "; found_sqlite=yes], [foo=bar])
-         fi
-         if test "$found_sqlite" = "yes"; then
--                SQLITE3_CFLAGS+=" -DCALL_LOGS_STORAGE_ENABLED"
-+                SQLITE3_CFLAGS="$SQLITE3_CFLAGS -DCALL_LOGS_STORAGE_ENABLED"
-                 if test "$build_macos" = "yes" -o "$ios_found" = "yes"; then
--                        SQLITE3_LIBS+=" -liconv"
-+                        SQLITE3_LIBS="$SQLITE3_LIBS -liconv"
-                 fi
-                 enable_call_logs_storage=true
-         else
-@@ -1004,7 +1004,7 @@
-                 [
-                         AC_CHECK_LIB(cunit,CU_add_suite,[
-                                 found_cunit=yes
--                                CUNIT_LIBS+=" -lcunit"
-+                                CUNIT_LIBS="$CUNIT_LIBS -lcunit"
-                         ])
- 
-                 ])
-@@ -1013,7 +1013,7 @@
- case "$target_os" in
- 	*darwin*)
- 		#hack for macport
--		CUNIT_LIBS+=" -lncurses"
-+		CUNIT_LIBS="$CUNIT_LIBS -lncurses"
- 	;;
- esac
- AM_CONDITIONAL([BUILD_CUNIT_TESTS], [test x$found_cunit = xyes && test x$tests_enabled != xfalse])

@@ -17,18 +17,19 @@
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
-Version:	3.9.1
-Release:	4
+Version:	3.12.0
+Release:	1
 License:	GPL v2+
 Group:		Applications/Communications
 Source0:	http://linphone.org/releases/sources/linphone/%{name}-%{version}.tar.gz
-# Source0-md5:	c1c3a63b7ee963360e0e89cf5e5ff406
+# Source0-md5:	8292dbaa0a5d0a448dcbbee125e947e4
 Patch0:		%{name}-sh.patch
+Patch1:		build.patch
 URL:		http://www.linphone.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.9
-BuildRequires:	belle-sip-devel >= 1.4.0
+BuildRequires:	belle-sip-devel >= 1.5.0
 %{?with_ldap:BuildRequires:	cyrus-sasl-devel >= 2}
 BuildRequires:	doxygen
 BuildRequires:	ffmpeg-devel >= 0.4.5
@@ -125,7 +126,7 @@ Summary:	Linphone libraries
 Summary(pl.UTF-8):	Biblioteki Linphone
 Group:		Libraries
 Requires(post,postun):	/sbin/ldconfig
-Requires:	belle-sip >= 1.4.0
+Requires:	belle-sip >= 1.5.0
 Requires:	glib2 >= 1:2.26.0
 Requires:	gtk+2 >= 2:2.22.0
 %{?with_system_mediastreamer:Requires:	mediastreamer >= 2.11.0}
@@ -144,7 +145,7 @@ Summary(pl.UTF-8):	Telefon internetowy Linphone - pliki nagłówkowe
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	alsa-lib-devel >= 0.9.0
-Requires:	belle-sip-devel >= 1.4.0
+Requires:	belle-sip-devel >= 1.5.0
 Requires:	glib2-devel >= 1:2.26.0
 Requires:	gtk+2 >= 2:2.22.0
 Requires:	libstdc++-devel
@@ -184,8 +185,13 @@ Statyczne wersje bibliotek Linphone.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+
+[ ! -e gitversion.h ] && echo '#define LIBLINPHONE_GIT_VERSION "%{version}"' > coreapi/gitversion.h
 
 %build
+%{__gettextize}
+%{__intltoolize}
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
@@ -259,7 +265,6 @@ install -d $RPM_BUILD_ROOT%{_desktopdir} \
 
 install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
 
-%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 %{!?with_system_mediastreamer:%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/mediastreamer}
 %{!?with_system_ortp:%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/ortp}
 
@@ -271,9 +276,6 @@ install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
 
 # some tests
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/*_test
-
-install -d $RPM_BUILD_ROOT%{_examplesdir}
-%{__mv} $RPM_BUILD_ROOT%{_datadir}/tutorials/%{name} $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 %find_lang %{name} --with-gnome --all-name
 
@@ -291,9 +293,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS BUGS ChangeLog NEWS README TODO
+%doc AUTHORS BUGS ChangeLog NEWS README.md TODO
+%attr(755,root,root) %{_bindir}/liblinphone_tester
 %attr(755,root,root) %{_bindir}/linphone
+%attr(755,root,root) %{_bindir}/linphone-daemon
+%attr(755,root,root) %{_bindir}/linphone-daemon-pipetest
 %attr(755,root,root) %{_bindir}/lp-autoanswer
+%attr(755,root,root) %{_bindir}/lp-sendmsg
+%attr(755,root,root) %{_bindir}/lp-test-ecc
 %{_desktopdir}/audio-assistant.desktop
 %{_desktopdir}/linphone.desktop
 %{_pixmapsdir}/linphone.png
@@ -310,7 +317,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n linphonec
 %defattr(644,root,root,755)
-%doc AUTHORS BUGS ChangeLog NEWS README TODO
+%doc AUTHORS BUGS ChangeLog NEWS README.md TODO
 %attr(755,root,root) %{_bindir}/linphonec
 %attr(755,root,root) %{_bindir}/linphonecsh
 %{_mandir}/man1/linphonec.1*
@@ -320,7 +327,7 @@ rm -rf $RPM_BUILD_ROOT
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/liblinphone.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/liblinphone.so.8
+%attr(755,root,root) %ghost %{_libdir}/liblinphone.so.9
 %attr(755,root,root) %{_libdir}/liblinphonetester.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblinphonetester.so.0
 %if %{without system_mediastreamer} || %{without system_ortp}
@@ -339,10 +346,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%doc coreapi/help/doc/html
 %attr(755,root,root) %{_libdir}/liblinphone.so
 %attr(755,root,root) %{_libdir}/liblinphonetester.so
-%attr(755,root,root) %{_bindir}/lp-gen-wrappers
 %{_includedir}/linphone
 %{_pkgconfigdir}/linphone.pc
 %{_libdir}/liblinphone.la
@@ -363,7 +368,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/include/ortp
 %{_libdir}/%{name}/pkgconfig/ortp.pc
 %endif
-%{_examplesdir}/%{name}-%{version}
 
 %if %{with static_libs}
 %files static

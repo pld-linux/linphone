@@ -1,0 +1,10 @@
+--- linphone-3.12.0/configure.ac~	2018-09-29 12:18:42.000000000 +0200
++++ linphone-3.12.0/configure.ac	2018-09-29 12:19:42.148451748 +0200
+@@ -1069,7 +1069,6 @@ AC_CONFIG_FILES([ po/Makefile.in
+ 	build/macos/Info-linphone.plist
+ 	build/macos/pkg-distribution.xml
+ 	m4/Makefile
+-	po/Makefile.in
+ 	pixmaps/Makefile
+ 	include/Makefile
+ 	include/linphone/Makefile
