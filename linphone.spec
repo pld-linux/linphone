@@ -18,7 +18,7 @@ Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
 Version:	3.12.0
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Applications/Communications
 Source0:	http://linphone.org/releases/sources/linphone/%{name}-%{version}.tar.gz
@@ -56,7 +56,6 @@ BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
 BuildRequires:	speex-devel >= 1:1.1.6
 BuildRequires:	sqlite3-devel >= 3.7.0
-%{!?with_system_ortp:BuildRequires:	srtp-devel}
 BuildRequires:	udev-devel
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXv-devel
@@ -156,7 +155,6 @@ Requires:	libxml2-devel >= 2.0
 %{?with_system_ortp:Requires:	ortp-devel >= 0.24.0}
 Requires:	speex-devel >= 1:1.1.6
 Requires:	sqlite3-devel >= 3.7.0
-Requires:	srtp-devel
 Requires:	xorg-lib-libX11-devel
 Requires:	xorg-lib-libXv-devel
 %if %{without system_mediastreamer}
