@@ -1,5 +1,6 @@
 # TODO:
-# - --enable-tunnel (BR: pkgconfig(tunnel) >= 0.3.3)
+# - --enable-tunnel (BR: pkgconfig(tunnel) >= 0.6.0)
+# - switch from polarssl to mbedtls (upstream forgot? bctoolbox uses mbedtls)
 # - fill in dependencies for !system_ortp, !system_mediastreamer
 # - check if all this configure option I've set are really needed
 # - separate libraries that do not require gnome into subpackages for Jingle support in kopete
@@ -13,12 +14,13 @@
 %bcond_without	static_libs		# static libraries
 %bcond_without	system_ortp		# use custom ortp
 %bcond_without	system_mediastreamer	# use custom mediastreamer
+%bcond_without	zrtp			# ZRTP support
 
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
 Version:	3.12.0
-Release:	4
+Release:	5
 License:	GPL v2+
 Group:		Applications/Communications
 Source0:	http://linphone.org/releases/sources/linphone/%{name}-%{version}.tar.gz
@@ -26,16 +28,16 @@ Source0:	http://linphone.org/releases/sources/linphone/%{name}-%{version}.tar.gz
 Patch0:		%{name}-sh.patch
 Patch1:		build.patch
 URL:		http://www.linphone.org/
-BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.9
+BuildRequires:	bctoolbox-devel >= 0.0.3
+BuildRequires:	belcard-devel
 BuildRequires:	belle-sip-devel >= 1.5.0
+%{?with_zrtp:BuildRequires:	bzrtp-devel >= 1.0.0}
 %{?with_ldap:BuildRequires:	cyrus-sasl-devel >= 2}
 BuildRequires:	doxygen
-BuildRequires:	ffmpeg-devel >= 0.4.5
 BuildRequires:	gettext-tools
 BuildRequires:	glib2-devel >= 1:2.26.0
-BuildRequires:	gnome-common >= 2.8.0
 BuildRequires:	gtk+2-devel >= 2:2.22.0
 BuildRequires:	intltool >= 0.40
 BuildRequires:	libnotify-devel >= 0.7.0
@@ -43,7 +45,6 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2
 BuildRequires:	libupnp-devel < 1.7
 BuildRequires:	libupnp-devel >= 1.6
-BuildRequires:	libv4l-devel
 BuildRequires:	libxml2-devel >= 2.0
 %{?with_system_mediastreamer:BuildRequires:	mediastreamer-devel >= 2.12.1}
 BuildRequires:	ncurses-devel
@@ -125,12 +126,15 @@ Summary:	Linphone libraries
 Summary(pl.UTF-8):	Biblioteki Linphone
 Group:		Libraries
 Requires(post,postun):	/sbin/ldconfig
+Requires:	bctoolbox >= 0.0.3
 Requires:	belle-sip >= 1.5.0
+%{?with_zrtp:Requires:	bzrtp >= 1.0.0}
 Requires:	glib2 >= 1:2.26.0
 Requires:	gtk+2 >= 2:2.22.0
 %{?with_system_mediastreamer:Requires:	mediastreamer >= 2.11.0}
 %{?with_system_ortp:Requires:	ortp >= 0.24.0}
 Requires:	sqlite3 >= 3.7.0
+Requires:	zlib >= 1.2.3
 
 %description libs
 Linphone libraries.
@@ -143,20 +147,18 @@ Summary:	Linphone Internet Phone - header files
 Summary(pl.UTF-8):	Telefon internetowy Linphone - pliki nagłówkowe
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
-Requires:	alsa-lib-devel >= 0.9.0
+Requires:	bctoolbox-devel >= 0.0.3
 Requires:	belle-sip-devel >= 1.5.0
+%{?with_zrtp:Requires:	bzrtp-devel >= 1.0.0}
 Requires:	glib2-devel >= 1:2.26.0
-Requires:	gtk+2 >= 2:2.22.0
+Requires:	gtk+2-devel >= 2:2.22.0
 Requires:	libstdc++-devel
-Requires:	libupnp-devel < 1.7
-Requires:	libupnp-devel >= 1.6
 Requires:	libxml2-devel >= 2.0
 %{?with_system_mediastreamer:Requires:	mediastreamer-devel >= 2.11.0}
+%{?with_ldap:Requires:	openldap-devel}
 %{?with_system_ortp:Requires:	ortp-devel >= 0.24.0}
-Requires:	speex-devel >= 1:1.1.6
 Requires:	sqlite3-devel >= 3.7.0
-Requires:	xorg-lib-libX11-devel
-Requires:	xorg-lib-libXv-devel
+Requires:	zlib-devel >= 1.2.3
 %if %{without system_mediastreamer}
 Requires:	libgsm-devel >= 1.0.10
 Requires:	speexdsp-devel >= 1.2-beta3
@@ -216,7 +218,6 @@ cd ..
 
 %configure \
 	--with-html-dir=%{_gtkdocdir} \
-	--enable-alsa \
 	%{?with_system_mediastreamer:--enable-external-mediastreamer} \
 	%{?with_system_ortp:--enable-external-ortp} \
 	--enable-ipv6 \
@@ -224,7 +225,8 @@ cd ..
 	--disable-silent-rules \
 	%{?with_openssl:--enable-ssl} \
 	%{?with_static_libs:--enable-static} \
-	--disable-strict
+	--disable-strict \
+	%{!?with_zrtp:--disable-zrtp}
 
 # although main configure already calls {oRTP,mediastreamer2}/configure,
 # reconfigure them with different dirs
@@ -274,6 +276,7 @@ install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
 
 # some tests
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/*_test
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/liblinphone_tester
 
 %find_lang %{name} --with-gnome --all-name
 
