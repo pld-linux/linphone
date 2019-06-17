@@ -1,0 +1,11 @@
+--- linphone-3.12.0/coreapi/Makefile.am.orig	2019-06-17 18:45:57.727374734 +0200
++++ linphone-3.12.0/coreapi/Makefile.am	2019-06-17 19:13:50.548312285 +0200
+@@ -205,7 +205,7 @@
+ 			cp -f $(builddir)/$(GITVERSION_FILE_TMP) $(builddir)/$(GITVERSION_FILE) ; \
+ 		fi ; \
+ 		rm -f $(builddir)/$(GITVERSION_FILE_TMP) ; \
+-	else \
++	elif test ! -f $(GITVERSION_FILE) ; then \
+ 		touch $(GITVERSION_FILE) ; \
+ 	fi
+ 

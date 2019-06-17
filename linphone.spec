@@ -20,13 +20,15 @@ Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
 Version:	3.12.0
-Release:	5
+Release:	6
 License:	GPL v2+
 Group:		Applications/Communications
 Source0:	http://linphone.org/releases/sources/linphone/%{name}-%{version}.tar.gz
 # Source0-md5:	8292dbaa0a5d0a448dcbbee125e947e4
 Patch0:		%{name}-sh.patch
 Patch1:		build.patch
+Patch2:		%{name}-cxx-autotools.patch
+Patch3:		%{name}-no-rebuild.patch
 URL:		http://www.linphone.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.9
@@ -53,6 +55,8 @@ BuildRequires:	ncurses-devel
 %{?with_system_ortp:BuildRequires:	ortp-devel >= 0.24.0}
 BuildRequires:	pkgconfig
 BuildRequires:	polarssl-devel >= 1.3
+# to generate C++ wrappers
+BuildRequires:	python-pystache
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
 BuildRequires:	speex-devel >= 1:1.1.6
@@ -182,10 +186,60 @@ Static version of Linphone libraries.
 %description static -l pl.UTF-8
 Statyczne wersje bibliotek Linphone.
 
+%package apidocs
+Summary:	API documentation for Linphone library
+Summary(pl.UTF-8):	Dokumentacja API biblioteki Linphone
+Group:		Documentation
+
+%description apidocs
+API documentation for Linphone library.
+
+%description apidocs -l pl.UTF-8
+Dokumentacja API biblioteki Linphone.
+
+%package c++
+Summary:	C++ wrapper for Linphone library
+Summary(pl.UTF-8):	Interfejs C++ do biblioteki Linphone
+Group:		Libraries
+Requires:	%{name}-libs = %{version}-%{release}
+
+%description c++
+C++ wrapper for Linphone library.
+
+%description c++ -l pl.UTF-8
+Interfejs C++ do biblioteki Linphone.
+
+%package c++-devel
+Summary:	Headers for liblinphone++ library
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki liblinphone++
+Group:		Development/Libraries
+Requires:	%{name}-c++ = %{version}-%{release}
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description c++-devel
+Headers for liblinphone++ library.
+
+%description c++-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki liblinphone++.
+
+%package c++-static
+Summary:	Static liblinphone++ library
+Summary(pl.UTF-8):	Statyczna biblioteka liblinphone++
+Group:		Development/Libraries
+Requires:	%{name}-c++-devel = %{version}-%{release}
+
+%description c++-static
+Static liblinphone++ library.
+
+%description c++-static -l pl.UTF-8
+Statyczna biblioteka liblinphone++.
+
 %prep
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 [ ! -e gitversion.h ] && echo '#define LIBLINPHONE_GIT_VERSION "%{version}"' > coreapi/gitversion.h
 
@@ -253,6 +307,10 @@ cd ..
 	GITDESCRIBE=/bin/true \
 	GIT_TAG=%{version}
 
+# disable installation of HTML docs (will be packaged as %doc)
+%{__tar} --delete -f coreapi/help/doc/doxygen/html/html.tar --wildcards '*'
+%{__tar} --delete -f coreapi/help/doc/doxygen/xml/xml.tar --wildcards '*'
+
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_desktopdir} \
@@ -261,7 +319,14 @@ install -d $RPM_BUILD_ROOT%{_desktopdir} \
 %{__make} install \
 	GITDESCRIBE=/bin/true \
 	GIT_TAG=%{version} \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	tuto_DATA=
+
+# obsoleted by pkg-config
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/liblinphone*.la
+%if %{without system_mediastreamer} || %{without system_ortp}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/*.la
+%endif
 
 install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
 
@@ -284,13 +349,16 @@ install pixmaps/%{name}.png $RPM_BUILD_ROOT%{_pixmapsdir}
 rm -rf $RPM_BUILD_ROOT
 
 %if %{without system_mediastreamer} || %{without system_ortp}
-%post libs
+%post	libs
 /sbin/ldconfig %{_libdir}/%{name}
 %else
-%post libs -p /sbin/ldconfig
+%post	libs -p /sbin/ldconfig
 %endif
 
-%postun libs -p /sbin/ldconfig
+%postun	libs -p /sbin/ldconfig
+
+%post	c++ -p /sbin/ldconfig
+%postun	c++ -p /sbin/ldconfig
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
@@ -351,8 +419,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/liblinphonetester.so
 %{_includedir}/linphone
 %{_pkgconfigdir}/linphone.pc
-%{_libdir}/liblinphone.la
-%{_libdir}/liblinphonetester.la
 %if %{without system_mediastreamer} || %{without system_ortp}
 %dir %{_libdir}/%{name}/include
 %dir %{_libdir}/%{name}/pkgconfig
@@ -381,4 +447,25 @@ rm -rf $RPM_BUILD_ROOT
 %if %{without system_ortp}
 %{_libdir}/%{name}/libortp.a
 %endif
+%endif
+
+%files apidocs
+%defattr(644,root,root,755)
+%doc coreapi/help/doc/doxygen/html/{*.css,*.html,*.js,*.png}
+
+%files c++
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/liblinphone++.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/liblinphone++.so.9
+
+%files c++-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/liblinphone++.so
+%{_includedir}/linphone++
+%{_pkgconfigdir}/linphone++.pc
+
+%if %{with static_libs}
+%files c++-static
+%defattr(644,root,root,755)
+%{_libdir}/liblinphone++.a
 %endif
