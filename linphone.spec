@@ -45,7 +45,6 @@ BuildRequires:	intltool >= 0.40
 BuildRequires:	libnotify-devel >= 0.7.0
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2
-BuildRequires:	libupnp-devel < 1.7
 BuildRequires:	libupnp-devel >= 1.6
 BuildRequires:	libxml2-devel >= 2.0
 %{?with_system_mediastreamer:BuildRequires:	mediastreamer-devel >= 2.12.1}
@@ -83,6 +82,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_noautoreq	%{?_noautoreq_1} %{?_noautoreq_2}
 %define		_noautoprov	%{?_noautoreq}
+
+%define		filterout	-Werror=format-security
 
 %description
 Linphone is a web phone: it let you phone to your friends anywhere in

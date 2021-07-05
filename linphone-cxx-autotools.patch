@@ -1,42 +1,6 @@
---- linphone-3.12.0/wrappers/cpp/Makefile.am.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linphone-3.12.0/wrappers/cpp/Makefile.am	2019-06-09 20:54:05.193613161 +0200
-@@ -0,0 +1,20 @@
-+lib_LTLIBRARIES = liblinphone++.la
-+liblinphone___la_CPPFLAGS = -DLINPHONECXX_EXPORTS
-+liblinphone___la_CXXFLAGS = -I$(builddir)/include -I$(top_builddir)/include -I$(top_srcdir)/include $(BCTOOLBOX_CFLAGS) $(BELLESIP_CFLAGS)
-+liblinphone___la_SOURCES = object.cc tools.cc
-+nodist_liblinphone___la_SOURCES = src/linphone++.cc
-+liblinphone___la_LDFLAGS= -version-info $(LIBLINPHONE_SO_VERSION) -no-undefined
-+liblinphone___la_LIBADD = $(top_builddir)/coreapi/liblinphone.la $(BCTOOLBOX_LIBS) $(BELLESIP_LIBS)
-+
-+linphonexxincludedir = $(includedir)/linphone++
-+linphonexxinclude_HEADERS = object.hh
-+
-+pkgconfigdir = $(libdir)/pkgconfig
-+nodist_pkgconfig_DATA = linphone++.pc
-+
-+src/linphone++.cc include/linphone++/linphone.hh: $(top_srcdir)/tools/genapixml.py $(top_srcdir)/tools/metadoc.py $(top_srcdir)/tools/abstractapi.py genwrapper.py class_header.mustache class_impl.mustache enums_header.mustache main_header.mustache $(top_builddir)/coreapi/help/doc/doxygen/xml/index.xml
-+	$(PYTHON) $(srcdir)/genwrapper.py $(top_builddir)/coreapi/help/doc/doxygen/xml
-+
-+install-data-hook:
-+	install -d $(DESTDIR)$(linphonexxincludedir)
-+	cp -p $(builddir)/include/linphone++/*.hh $(DESTDIR)$(linphonexxincludedir)
---- linphone-3.12.0/wrappers/cpp/linphone++.pc.in.orig	1970-01-01 01:00:00.000000000 +0100
-+++ linphone-3.12.0/wrappers/cpp/linphone++.pc.in	2019-06-17 17:53:28.781100707 +0200
-@@ -0,0 +1,11 @@
-+prefix=@prefix@
-+exec_prefix=@exec_prefix@
-+libdir=@libdir@
-+includedir=@includedir@
-+
-+Requires.private: linphone bctoolbox belle-sip
-+Name: liblinphone++
-+Description: C++ wrapper for linphone libraries.
-+Version: @VERSION@
-+Libs: -llinphone++
-+Cflags: -I$(includedir)
---- linphone-3.12.0/Makefile.am.orig	2017-04-06 11:25:59.000000000 +0200
-+++ linphone-3.12.0/Makefile.am	2019-06-09 20:54:34.416788179 +0200
+diff -urNp -x '*.orig' linphone-3.12.0.org/Makefile.am linphone-3.12.0/Makefile.am
+--- linphone-3.12.0.org/Makefile.am	2017-04-06 11:25:59.000000000 +0200
++++ linphone-3.12.0/Makefile.am	2021-07-06 00:14:06.742751269 +0200
 @@ -4,7 +4,7 @@
  ACLOCAL_AMFLAGS = -I m4 $(ACLOCAL_MACOS_FLAGS)
  
@@ -46,9 +10,10 @@
  
  GITVERSION=`cd $(top_srcdir) && git describe --always || echo $(VERSION)`
  
---- linphone-3.12.0/configure.ac.orig	2019-06-09 20:37:36.645635251 +0200
-+++ linphone-3.12.0/configure.ac	2019-06-09 20:54:59.119987683 +0200
-@@ -1073,6 +1073,12 @@
+diff -urNp -x '*.orig' linphone-3.12.0.org/configure.ac linphone-3.12.0/configure.ac
+--- linphone-3.12.0.org/configure.ac	2021-07-06 00:14:06.539414973 +0200
++++ linphone-3.12.0/configure.ac	2021-07-06 00:14:06.742751269 +0200
+@@ -1073,6 +1073,12 @@ AC_CONFIG_FILES([
  	include/Makefile
  	include/linphone/Makefile
  	coreapi/Makefile
@@ -61,7 +26,7 @@
  	tester/Makefile
  	gtk/Makefile
  	console/Makefile
-@@ -1089,6 +1089,8 @@
+@@ -1089,6 +1095,8 @@ AC_CONFIG_FILES([
  	share/audio-assistant.desktop
  	scripts/Makefile
  	tools/Makefile
@@ -70,9 +35,10 @@
  	linphone.spec
  	linphone.iss
  ])
---- linphone-3.12.0/coreapi/Makefile.am.orig	2017-06-20 12:03:59.000000000 +0200
-+++ linphone-3.12.0/coreapi/Makefile.am	2019-06-09 21:50:46.738518743 +0200
-@@ -13,7 +13,7 @@
+diff -urNp -x '*.orig' linphone-3.12.0.org/coreapi/Makefile.am linphone-3.12.0/coreapi/Makefile.am
+--- linphone-3.12.0.org/coreapi/Makefile.am	2017-06-20 12:03:59.000000000 +0200
++++ linphone-3.12.0/coreapi/Makefile.am	2021-07-06 00:14:06.742751269 +0200
+@@ -13,7 +13,7 @@ GITLOG=`cd $(top_srcdir) && git log -1 -
  
  ECHO=/bin/echo
  
@@ -81,8 +47,9 @@
  
  EXTRA_DIST=linphonecore_jni.cc $(GITVERSION_FILE)
  
---- linphone-3.12.0/coreapi/help/doc/doxygen/Makefile.am.orig	2017-06-20 12:03:59.000000000 +0200
-+++ linphone-3.12.0/coreapi/help/doc/doxygen/Makefile.am	2019-06-10 19:34:47.457985724 +0200
+diff -urNp -x '*.orig' linphone-3.12.0.org/coreapi/help/doc/doxygen/Makefile.am linphone-3.12.0/coreapi/help/doc/doxygen/Makefile.am
+--- linphone-3.12.0.org/coreapi/help/doc/doxygen/Makefile.am	2017-06-20 12:03:59.000000000 +0200
++++ linphone-3.12.0/coreapi/help/doc/doxygen/Makefile.am	2021-07-06 00:14:06.742751269 +0200
 @@ -1,6 +1,6 @@
  EXTRA_DIST=Doxyfile.in doxygen.dox
  
@@ -91,7 +58,7 @@
  
  if HAVE_DOXYGEN
  
-@@ -9,21 +9,21 @@
+@@ -9,21 +9,21 @@ pkgdocdir=$(docdir)/$(PACKAGE)-$(VERSION
  doc_htmldir=$(pkgdocdir)/html
  doc_xmldir=$(pkgdocdir)/xml
  
@@ -121,3 +88,42 @@
  
  
  install-data-hook:
+diff -urNp -x '*.orig' linphone-3.12.0.org/wrappers/cpp/Makefile.am linphone-3.12.0/wrappers/cpp/Makefile.am
+--- linphone-3.12.0.org/wrappers/cpp/Makefile.am	1970-01-01 01:00:00.000000000 +0100
++++ linphone-3.12.0/wrappers/cpp/Makefile.am	2021-07-06 00:14:06.742751269 +0200
+@@ -0,0 +1,20 @@
++lib_LTLIBRARIES = liblinphone++.la
++liblinphone___la_CPPFLAGS = -DLINPHONECXX_EXPORTS
++liblinphone___la_CXXFLAGS = -I$(builddir)/include -I$(top_builddir)/include -I$(top_srcdir)/include $(BCTOOLBOX_CFLAGS) $(BELLESIP_CFLAGS)
++liblinphone___la_SOURCES = object.cc tools.cc
++nodist_liblinphone___la_SOURCES = src/linphone++.cc
++liblinphone___la_LDFLAGS= -version-info $(LIBLINPHONE_SO_VERSION) -no-undefined
++liblinphone___la_LIBADD = $(top_builddir)/coreapi/liblinphone.la $(BCTOOLBOX_LIBS) $(BELLESIP_LIBS)
++
++linphonexxincludedir = $(includedir)/linphone++
++linphonexxinclude_HEADERS = object.hh
++
++pkgconfigdir = $(libdir)/pkgconfig
++nodist_pkgconfig_DATA = linphone++.pc
++
++src/linphone++.cc include/linphone++/linphone.hh: $(top_srcdir)/tools/genapixml.py $(top_srcdir)/tools/metadoc.py $(top_srcdir)/tools/abstractapi.py genwrapper.py class_header.mustache class_impl.mustache enums_header.mustache main_header.mustache $(top_builddir)/coreapi/help/doc/doxygen/xml/index.xml
++	$(PYTHON) $(srcdir)/genwrapper.py $(top_builddir)/coreapi/help/doc/doxygen/xml
++
++install-data-hook:
++	install -d $(DESTDIR)$(linphonexxincludedir)
++	cp -p $(builddir)/include/linphone++/*.hh $(DESTDIR)$(linphonexxincludedir)
+diff -urNp -x '*.orig' linphone-3.12.0.org/wrappers/cpp/linphone++.pc.in linphone-3.12.0/wrappers/cpp/linphone++.pc.in
+--- linphone-3.12.0.org/wrappers/cpp/linphone++.pc.in	1970-01-01 01:00:00.000000000 +0100
++++ linphone-3.12.0/wrappers/cpp/linphone++.pc.in	2021-07-06 00:14:06.742751269 +0200
+@@ -0,0 +1,11 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Requires.private: linphone bctoolbox belle-sip
++Name: liblinphone++
++Description: C++ wrapper for linphone libraries.
++Version: @VERSION@
++Libs: -llinphone++
++Cflags: -I$(includedir)

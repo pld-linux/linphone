@@ -1,6 +1,7 @@
---- linphone-3.10.2/configure.ac~	2016-08-30 16:20:09.000000000 +0200
-+++ linphone-3.10.2/configure.ac	2018-09-26 15:05:58.553546486 +0200
-@@ -898,11 +898,11 @@ if test x$enable_vcard != xfalse; then
+diff -urNp -x '*.orig' linphone-3.12.0.org/configure.ac linphone-3.12.0/configure.ac
+--- linphone-3.12.0.org/configure.ac	2017-06-29 11:20:47.000000000 +0200
++++ linphone-3.12.0/configure.ac	2021-07-06 00:14:05.732736552 +0200
+@@ -922,11 +922,11 @@ if test x$enable_vcard != xfalse; then
  	if test "$found_vcard" = "no"; then
  		dnl Check the lib presence in case the PKG-CONFIG version is not found
  		AC_LANG_CPLUSPLUS
@@ -14,7 +15,7 @@
  		enable_vcard=true
  	else
  		if test x$enable_vcard = xtrue; then
-@@ -931,12 +931,12 @@ if test x$enable_sqlite_storage != xfals
+@@ -955,12 +955,12 @@ if test x$enable_sqlite_storage != xfals
  	PKG_CHECK_MODULES(SQLITE3,[sqlite3 >= 3.6.0],[found_sqlite=yes],[found_sqlite=no])
  	if test "$found_sqlite" = "no"; then
  		dnl Check the lib presence in case the PKG-CONFIG version is not found
@@ -28,5 +29,5 @@
 -			SQLITE3_LIBS+=" -liconv"
 +			SQLITE3_LIBS="$SQLITE3_LIBS -liconv"
  		fi
- 		enable_msg_storage=true
+ 		enable_sqlite_storage=true
  	else
