@@ -1,0 +1,10 @@
+--- linphone-3.12.0/wrappers/cpp/object.hh~	2017-04-06 11:26:00.000000000 +0200
++++ linphone-3.12.0/wrappers/cpp/object.hh	2021-07-12 00:06:44.171289642 +0200
+@@ -24,6 +24,7 @@
+ #include <list>
+ #include <map>
+ #include <string>
++#include <stdexcept>
+ 
+ #ifndef LINPHONECXX_PUBLIC
+ #if defined(_MSC_VER)

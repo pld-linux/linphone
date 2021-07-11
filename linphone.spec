@@ -20,7 +20,7 @@ Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
 Version:	3.12.0
-Release:	8
+Release:	9
 License:	GPL v2+
 Group:		Applications/Communications
 Source0:	http://linphone.org/releases/sources/linphone/%{name}-%{version}.tar.gz
@@ -29,6 +29,8 @@ Patch0:		%{name}-sh.patch
 Patch1:		build.patch
 Patch2:		%{name}-cxx-autotools.patch
 Patch3:		%{name}-no-rebuild.patch
+Patch4:		bctoolbox-4.5.patch
+Patch5:		cxx.patch
 URL:		http://www.linphone.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.9
@@ -241,6 +243,8 @@ Statyczna biblioteka liblinphone++.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 [ ! -e gitversion.h ] && echo '#define LIBLINPHONE_GIT_VERSION "%{version}"' > coreapi/gitversion.h
 

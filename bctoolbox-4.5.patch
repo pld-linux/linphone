@@ -1,0 +1,11 @@
+--- linphone-3.12.0/coreapi/sqlite3_bctbx_vfs.c.orig	2017-04-26 10:19:03.000000000 +0200
++++ linphone-3.12.0/coreapi/sqlite3_bctbx_vfs.c	2021-07-12 00:01:04.176260680 +0200
+@@ -245,7 +245,7 @@
+ 	ret = FlushFileBuffers((HANDLE)_get_osfhandle(pFile->pbctbx_file->fd));
+ 	return (ret!=0 ? SQLITE_OK : SQLITE_IOERR_FSYNC);
+ #else
+-	int rc = fsync(pFile->pbctbx_file->fd);
++	int rc = pFile->pbctbx_file->pMethods->pFuncSync(pFile->pbctbx_file);
+ 	return (rc==0 ? SQLITE_OK : SQLITE_IOERR_FSYNC);
+ #endif
+ }
