@@ -1,0 +1,33 @@
+--- linphone-desktop-4.2.5/CMakeLists.txt.orig	2021-07-17 17:21:38.966891901 +0200
++++ linphone-desktop-4.2.5/CMakeLists.txt	2021-07-17 20:14:21.000755945 +0200
+@@ -43,7 +43,7 @@
+ 	message(STATUS "Setting Platform to ${CMAKE_GENERATOR_PLATFORM}")
+ endif()
+ 
+-project(linphoneqt)
++project(linphoneqt C CXX)
+ 
+ include(GNUInstallDirs)
+ include(CheckCXXCompilerFlag)
+@@ -145,8 +145,8 @@
+ 	message(FATAL_ERROR "Minimum supported Qt5 version is 5.12!")
+ endif()
+ 
+-find_package(LinphoneCxx CONFIG QUIET)
+ find_package(Linphone CONFIG QUIET)
++find_package(LinphoneCxx CONFIG QUIET)
+ find_package(bctoolbox CONFIG QUIET)
+ find_package(belcard CONFIG QUIET)
+ find_package(Mediastreamer2 CONFIG QUIET)
+--- linphone-desktop-4.2.5/linphone-app/CMakeLists.txt.orig	2021-07-17 17:21:38.970225216 +0200
++++ linphone-desktop-4.2.5/linphone-app/CMakeLists.txt	2021-07-17 20:21:15.985174448 +0200
+@@ -66,8 +66,8 @@
+ 	endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
+ endif()
+ 
+-find_package(LinphoneCxx CONFIG)
+ find_package(Linphone CONFIG)
++find_package(LinphoneCxx CONFIG)
+ find_package(belcard CONFIG)
+ find_package(Mediastreamer2 CONFIG)
+ find_package(ortp CONFIG)

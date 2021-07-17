@@ -1,0 +1,77 @@
+--- linphone-desktop-4.2.5/CMakeLists.txt.orig	2020-12-18 19:29:31.000000000 +0100
++++ linphone-desktop-4.2.5/CMakeLists.txt	2021-07-17 16:25:54.211678661 +0200
+@@ -136,28 +136,9 @@
+ 	set(CMAKE_INSTALL_RPATH "$ORIGIN:$ORIGIN/lib64:$ORIGIN/../lib64:$ORIGIN/lib:$ORIGIN/../lib:${LINPHONE_OUTPUT_DIR}/${CMAKE_INSTALL_LIBDIR}")
+ 	list(APPEND APP_OPTIONS "-DCMAKE_INSTALL_RPATH=${CMAKE_INSTALL_RPATH}")
+ endif()
+-ExternalProject_Add(sdk PREFIX "${CMAKE_BINARY_DIR}/sdk"
+-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/linphone-sdk"
+-    INSTALL_DIR "${LINPHONE_OUTPUT_DIR}"
+-    STAMP_DIR "${SDK_BUILD_DIR}/stamp"
+-    BINARY_DIR "${SDK_BUILD_DIR}"
+-    STEP_TARGETS build
+-    BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config $<CONFIG> ${PROJECT_BUILD_COMMAND}
+-    INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Install step is already done at build time."
+-    LIST_SEPARATOR | # Use the alternate list separator
+-    CMAKE_ARGS ${APP_OPTIONS} ${USER_ARGS} -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR> -DCMAKE_PREFIX_PATH=${PREFIX_PATH}
+-    #BUILD_ALWAYS NO #${DO_BUILD}
+-)
+-ExternalProject_Add_Step(sdk force_build
+-	COMMENT "Forcing build for 'desktop'"
+-	DEPENDEES configure
+-	DEPENDERS build
+-	ALWAYS 1
+-)
+ include(FindPkgConfig)
+ 
+-set(APP_DEPENDS sdk)
+-
++set(APP_DEPENDS )
+ 
+ find_package(Qt5 5.12 COMPONENTS Core REQUIRED)
+ 
+@@ -160,7 +160,6 @@
+ 		SOURCE_DIR "${CMAKE_SOURCE_DIR}/linphone-app"
+ 		INSTALL_DIR "${APPLICATION_OUTPUT_DIR}"
+ 		BINARY_DIR "${CMAKE_BINARY_DIR}/linphone-app"
+-		DEPENDS ${APP_DEPENDS}
+ 		BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config $<CONFIG> ${PROJECT_BUILD_COMMAND}
+ 		INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Install step will not be done by external project"
+ 		LIST_SEPARATOR | # Use the alternate list separator
+@@ -177,7 +176,6 @@
+ 	message("Adding Linphone Desktop in an IDE-friendly state")
+ 	set(CMAKE_INSTALL_PREFIX "${APPLICATION_OUTPUT_DIR}")
+ 	add_subdirectory(${CMAKE_SOURCE_DIR}/linphone-app)
+-	add_dependencies(app-library ${APP_DEPENDS})
+ endif()
+ ExternalProject_Add(linphone-qt-only PREFIX "${CMAKE_BINARY_DIR}/linphone-app"
+     SOURCE_DIR "${CMAKE_SOURCE_DIR}/linphone-app"
+--- linphone-desktop-4.2.5/linphone-app/cmake_builder/linphone_package/CMakeLists.txt.orig	2021-07-17 20:57:04.230203073 +0200
++++ linphone-desktop-4.2.5/linphone-app/cmake_builder/linphone_package/CMakeLists.txt	2021-07-17 21:11:27.315527338 +0200
+@@ -206,7 +206,9 @@
+ 		execute_process(COMMAND install_name_tool -rpath "${LINPHONE_OUTPUT_DIR}/${CMAKE_INSTALL_LIBDIR}" "$ORIGIN/../lib" "${LIBRARY}")
+ 		execute_process(COMMAND install_name_tool -addrpath "$ORIGIN/../lib64" "${LIBRARY}")
+ 	endforeach ()
++	if (EXISTS "${LINPHONE_OUTPUT_DIR}/${CMAKE_INSTALL_BINDIR}")
+ 	install(DIRECTORY "${LINPHONE_OUTPUT_DIR}/${CMAKE_INSTALL_BINDIR}/" DESTINATION "${CMAKE_INSTALL_BINDIR}" USE_SOURCE_PERMISSIONS)
++	endif()
+ #Just in case. This is useless because we have to use CMAKE_INSTALL_LIBDIR
+ 	if( EXISTS "${LINPHONE_OUTPUT_DIR}/lib/")
+ 		file(GLOB SHARED_LIBRARIES "${LINPHONE_OUTPUT_DIR}/lib/*.so*")
+@@ -232,12 +234,16 @@
+ 		endif()
+ 		install(FILES ${SHARED_LIBRARIES} DESTINATION "lib64")
+ 	endif()
++	if (EXISTS "${LINPHONE_OUTPUT_DIR}/${CMAKE_INSTALL_DATAROOTDIR}")
+ 	install(DIRECTORY "${LINPHONE_OUTPUT_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}" USE_SOURCE_PERMISSIONS)
+ 	if(ENABLE_BUILD_VERBOSE)
+ 		message("INSTALLATION : ${LINPHONE_OUTPUT_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/" )
+ 	endif()
++	endif()
++	if (EXISTS "${LINPHONE_OUTPUT_DIR}/${CMAKE_INSTALL_LIBDIR}")
+ 	file(GLOB PLUGINS_FILES "${LINPHONE_OUTPUT_DIR}/${CMAKE_INSTALL_LIBDIR}/mediastreamer/plugins/*")
+ 	install(FILES ${PLUGINS_FILES} DESTINATION "plugins/mediastreamer/" )
++	endif()
+ # Install desktop/icon files.
+ 	configure_file("${CMAKE_CURRENT_SOURCE_DIR}/../../assets/linphone.desktop.cmake" "${CMAKE_CURRENT_BINARY_DIR}/../../${EXECUTABLE_NAME}.desktop" @ONLY)	
+ 	install(FILES "${CMAKE_CURRENT_BINARY_DIR}/../../${EXECUTABLE_NAME}.desktop" DESTINATION "${CMAKE_INSTALL_DATADIR}/applications")
