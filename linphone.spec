@@ -10,12 +10,6 @@ Source0:	https://gitlab.linphone.org/BC/public/linphone-desktop/-/archive/%{vers
 # Source0-md5:	ecab72769c693d6e9cb632bb2ba42d22
 Patch0:		%{name}-no-sdk.patch
 Patch1:		%{name}-cmake.patch
-#Patch0:		%{name}-sh.patch
-#Patch1:		build.patch
-#Patch2:		%{name}-cxx-autotools.patch
-#Patch3:		%{name}-no-rebuild.patch
-#Patch4:		bctoolbox-4.5.patch
-#Patch5:		cxx.patch
 URL:		http://www.linphone.org/
 BuildRequires:	Qt5Concurrent-devel >= 5.12
 BuildRequires:	Qt5Core-devel >= 5.12
