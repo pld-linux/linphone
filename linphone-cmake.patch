@@ -1,7 +1,7 @@
---- linphone-desktop-4.2.5/CMakeLists.txt.orig	2021-07-17 17:21:38.966891901 +0200
-+++ linphone-desktop-4.2.5/CMakeLists.txt	2021-07-17 20:14:21.000755945 +0200
-@@ -43,7 +43,7 @@
- 	message(STATUS "Setting Platform to ${CMAKE_GENERATOR_PLATFORM}")
+--- linphone-desktop-5.0.15/CMakeLists.txt.orig	2023-04-19 21:14:47.137607063 +0200
++++ linphone-desktop-5.0.15/CMakeLists.txt	2023-04-19 21:17:02.070209404 +0200
+@@ -44,7 +44,7 @@ if( APPLE )
+ 	endif()
  endif()
  
 -project(linphoneqt)
@@ -9,8 +9,8 @@
  
  include(GNUInstallDirs)
  include(CheckCXXCompilerFlag)
-@@ -145,8 +145,8 @@
- 	message(FATAL_ERROR "Minimum supported Qt5 version is 5.12!")
+@@ -250,8 +250,8 @@ if ( NOT Qt5_FOUND )
+ 	message(FATAL_ERROR "Minimum supported Qt5 version is 5.10!")
  endif()
  
 -find_package(LinphoneCxx CONFIG QUIET)
