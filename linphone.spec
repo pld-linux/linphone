@@ -1,14 +1,14 @@
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
-# 5.0+ requires SDK v5.2, which is partially on AGPL (see DEVEL-5 branch)
-Version:	4.4.11
+Version:	5.0.15
 Release:	1
-License:	GPL v3+ or proprietary
+# linphone itself is GPL, but ortp+mediastreamer+liblinphone 5.2 are AGPL
+License:	GPL v3+/AGPL v3+ or proprietary
 Group:		Applications/Communications
 #Source0Download: https://gitlab.linphone.org/BC/public/linphone-desktop/-/tags
 Source0:	https://gitlab.linphone.org/BC/public/linphone-desktop/-/archive/%{version}/linphone-desktop-%{version}.tar.bz2
-# Source0-md5:	89948a7412880c6393b3254fb99c50ef
+# Source0-md5:	f2e6513759255f2c24323af7f403ab34
 Patch0:		%{name}-no-sdk.patch
 Patch1:		%{name}-cmake.patch
 Patch2:		%{name}-install.patch
@@ -24,24 +24,24 @@ BuildRequires:	Qt5Quick-controls2-devel >= 5.12
 BuildRequires:	Qt5Speech-devel >= 5.12
 BuildRequires:	Qt5Svg-devel >= 5.12
 BuildRequires:	Qt5Widgets-devel >= 5.12
-BuildRequires:	bctoolbox-devel >= 0.0.3
-BuildRequires:	belcard-devel >= 5.1
+BuildRequires:	bctoolbox-devel >= 5.2
+BuildRequires:	belcard-devel >= 5.2
 BuildRequires:	cmake >= 3.1
 BuildRequires:	doxygen
-BuildRequires:	liblinphone-devel >= 5.1
-BuildRequires:	liblinphone-c++-devel >= 5.1
+BuildRequires:	liblinphone-devel >= 5.2
+BuildRequires:	liblinphone-c++-devel >= 5.2
 BuildRequires:	libstdc++-devel >= 6:4.7
-BuildRequires:	mediastreamer-devel >= 5.1
-BuildRequires:	ortp-devel >= 5.1
+BuildRequires:	mediastreamer-devel >= 5.2
+BuildRequires:	ortp-devel >= 5.2
 BuildRequires:	pkgconfig
 BuildRequires:	qt5-build >= 5.12
 BuildRequires:	qt5-linguist >= 5.12
 BuildRequires:	rpmbuild(macros) >= 1.605
-Requires:	belcard >= 5.1
-Requires:	liblinphone >= 5.1
-Requires:	liblinphone-c++ >= 5.1
-Requires:	mediastreamer >= 5.1
-Requires:	ortp >= 5.1
+Requires:	belcard >= 5.2
+Requires:	liblinphone >= 5.2
+Requires:	liblinphone-c++ >= 5.2
+Requires:	mediastreamer >= 5.2
+Requires:	ortp >= 5.2
 Obsoletes:	linphoneqt < 4.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -124,6 +124,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_iconsdir}/hicolor/scalable/apps/linphone.svg
 %{_datadir}/linphone/assistant
 %dir %{_datadir}/linphone/languages
+%lang(cs) %{_datadir}/linphone/languages/cs.qm
 %lang(da) %{_datadir}/linphone/languages/da.qm
 %lang(de) %{_datadir}/linphone/languages/de.qm
 %{_datadir}/linphone/languages/en.qm
