@@ -1,36 +1,41 @@
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
-Version:	5.0.15
+Version:	5.2.2
 Release:	1
 # linphone itself is GPL, but ortp+mediastreamer+liblinphone 5.2 are AGPL
 License:	GPL v3+/AGPL v3+ or proprietary
 Group:		Applications/Communications
 #Source0Download: https://gitlab.linphone.org/BC/public/linphone-desktop/-/tags
 Source0:	https://gitlab.linphone.org/BC/public/linphone-desktop/-/archive/%{version}/linphone-desktop-%{version}.tar.bz2
-# Source0-md5:	f2e6513759255f2c24323af7f403ab34
+# Source0-md5:	5851162d0d8a954ff8ccebf323ad5d69
 Patch0:		%{name}-no-sdk.patch
 Patch1:		%{name}-cmake.patch
-Patch2:		%{name}-install.patch
+Patch2:		%{name}-qtkeychain.patch
+Patch3:		%{name}-ispell.patch
 URL:		http://www.linphone.org/
 BuildRequires:	Qt5Concurrent-devel >= 5.12
 BuildRequires:	Qt5Core-devel >= 5.12
 BuildRequires:	Qt5DBus-devel >= 5.12
 BuildRequires:	Qt5Gui-devel >= 5.12
+BuildRequires:	Qt5Keychain-devel
+BuildRequires:	Qt5Multimedia-devel >= 5.12
 BuildRequires:	Qt5Network-devel >= 5.12
+BuildRequires:	Qt5Qml-devel >= 5.12
 BuildRequires:	Qt5Quick-devel >= 5.12
 BuildRequires:	Qt5Quick-controls2-devel >= 5.12
 # optional
 BuildRequires:	Qt5Speech-devel >= 5.12
 BuildRequires:	Qt5Svg-devel >= 5.12
 BuildRequires:	Qt5Widgets-devel >= 5.12
+BuildRequires:	bc-ispell-devel
 BuildRequires:	bctoolbox-devel >= 5.2
 BuildRequires:	belcard-devel >= 5.2
 BuildRequires:	cmake >= 3.1
 BuildRequires:	doxygen
-BuildRequires:	liblinphone-devel >= 5.2
-BuildRequires:	liblinphone-c++-devel >= 5.2
-BuildRequires:	libstdc++-devel >= 6:4.7
+BuildRequires:	liblinphone-devel >= 5.3
+BuildRequires:	liblinphone-c++-devel >= 5.3
+BuildRequires:	libstdc++-devel >= 6:7
 BuildRequires:	mediastreamer-devel >= 5.2
 BuildRequires:	ortp-devel >= 5.2
 BuildRequires:	pkgconfig
@@ -38,8 +43,8 @@ BuildRequires:	qt5-build >= 5.12
 BuildRequires:	qt5-linguist >= 5.12
 BuildRequires:	rpmbuild(macros) >= 1.605
 Requires:	belcard >= 5.2
-Requires:	liblinphone >= 5.2
-Requires:	liblinphone-c++ >= 5.2
+Requires:	liblinphone >= 5.3
+Requires:	liblinphone-c++ >= 5.3
 Requires:	mediastreamer >= 5.2
 Requires:	ortp >= 5.2
 Obsoletes:	linphoneqt < 4.2
@@ -66,7 +71,7 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	Qt5Core-devel >= 5.12
 Requires:	Qt5Network-devel >= 5.12
-Requires:	libstdc++-devel >= 6:4.7
+Requires:	libstdc++-devel >= 6:7
 
 %description devel
 Header files for Linphone plugins.
@@ -79,20 +84,23 @@ Pliki nagłówkowe dla wtyczek Linphone.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 # hack versions (git describe doesn't work on dist tarballs)
-%{__sed} -i -e 's/set(FULL_VERSION )/set(FULL_VERSION %{version})/; /^bc_compute_full_version/d' linphone-app/CMakeLists.txt
 %{__sed} -i -e 's/bc_compute_full_version(PROJECT_VERSION_BUILD)/set(PROJECT_VERSION_BUILD %{version})/' linphone-app/build/CMakeLists.txt
-%{__sed} -i -e 's/bc_compute_full_version(APP_PROJECT_VERSION)/set(APP_PROJECT_VERSION %{version})/' linphone-app/cmake_builder/linphone_package/CMakeLists.txt
-%{__sed} -i -e 's/LINPHONE_QT_GIT_VERSION/"%{version}"/' linphone-app/src/app/AppController.cpp
 # adjust locales path
 %{__sed} -i -e '/LanguagePath/ s,"[^"]*","%{_datadir}/linphone/languages",' linphone-app/src/utils/Constants.hpp
+
+# hide Find... macros relying on external projects
+%{__mv} linphone-app/cmake{,.hidden}
 
 %build
 install -d build
 cd build
 %cmake .. \
-	-DLINPHONE_QT_ONLY=ON
+	-DLINPHONEAPP_VERSION="%{version}" \
+	-DLINPHONE_QT_ONLY=ON \
+	-DLinphoneCxx_TARGET="liblinphone++"
 
 %{__make}
 
@@ -107,6 +115,9 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_datadir}/linphone/languages
 cp -p build/linphone-app/assets/languages/*.qm $RPM_BUILD_ROOT%{_datadir}/linphone/languages
 %{__mv} $RPM_BUILD_ROOT%{_datadir}/linphone/languages/{fr_FR,fr}.qm
+
+# because of buggy linphone-app/cmake_builder/linphone_package/CMakeLists.txt
+%{__mv} $RPM_BUILD_ROOT%{_includedir}/include/LinphoneApp $RPM_BUILD_ROOT%{_includedir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT

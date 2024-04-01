@@ -1,33 +1,32 @@
---- linphone-desktop-5.0.15/CMakeLists.txt.orig	2023-04-19 21:14:47.137607063 +0200
-+++ linphone-desktop-5.0.15/CMakeLists.txt	2023-04-19 21:17:02.070209404 +0200
-@@ -44,7 +44,7 @@ if( APPLE )
- 	endif()
- endif()
+--- linphone-desktop-5.2.2/linphone-app/CMakeLists.txt.orig	2024-03-11 18:30:37.000000000 +0100
++++ linphone-desktop-5.2.2/linphone-app/CMakeLists.txt	2024-03-12 21:45:48.707479838 +0100
+@@ -24,7 +24,7 @@ cmake_minimum_required(VERSION 3.22)
  
--project(linphoneqt)
-+project(linphoneqt C CXX)
  
- include(GNUInstallDirs)
- include(CheckCXXCompilerFlag)
-@@ -250,8 +250,8 @@ if ( NOT Qt5_FOUND )
- 	message(FATAL_ERROR "Minimum supported Qt5 version is 5.10!")
- endif()
+ #Linphone targets
+-set(LINPHONE_PACKAGES LinphoneCxx Mediastreamer2 Belcard LibLinphone)
++set(LINPHONE_PACKAGES LinphoneCxx Mediastreamer2 BelCard LibLinphone)
  
--find_package(LinphoneCxx CONFIG QUIET)
- find_package(Linphone CONFIG QUIET)
-+find_package(LinphoneCxx CONFIG QUIET)
- find_package(bctoolbox CONFIG QUIET)
- find_package(belcard CONFIG QUIET)
- find_package(Mediastreamer2 CONFIG QUIET)
---- linphone-desktop-4.2.5/linphone-app/CMakeLists.txt.orig	2021-07-17 17:21:38.970225216 +0200
-+++ linphone-desktop-4.2.5/linphone-app/CMakeLists.txt	2021-07-17 20:21:15.985174448 +0200
-@@ -66,8 +66,8 @@
- 	endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
- endif()
+ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
  
--find_package(LinphoneCxx CONFIG)
- find_package(Linphone CONFIG)
-+find_package(LinphoneCxx CONFIG)
- find_package(belcard CONFIG)
- find_package(Mediastreamer2 CONFIG)
- find_package(ortp CONFIG)
+@@ -105,10 +105,7 @@ set(ENABLE_DB_STORAGE ON CACHE BOOLEAN "
+ 
+ foreach(PACKAGE ${LINPHONE_PACKAGES})
+ 	message(STATUS "Trying to find ${PACKAGE}")
+-	find_package(${PACKAGE})
+-	if(NOT ${PACKAGE}_FOUND)
+-		find_package(${PACKAGE} CONFIG REQUIRED)
+-	endif()
++	find_package(${PACKAGE} CONFIG REQUIRED)
+ endforeach()
+ 
+ set(PLUGIN_TARGETS ${LinphoneCxx_TARGET})
+@@ -112,7 +112,7 @@ set(PLUGIN_TARGETS ${LinphoneCxx_TARGET}
+ set(APP_TARGETS ${LinphoneCxx_TARGET}
+ 				${BCToolbox_TARGET}#Logger/App
+ 				${Mediastreamer2_TARGET}#MediastreamerUtils
+-				${Belcard_TARGET}#VCard Model
++				${BelCard_TARGET}#VCard Model
+ 				${LibLinphone_TARGET})#MediastreamerUtils
+ 
+ ####################################

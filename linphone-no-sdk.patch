@@ -1,16 +1,16 @@
---- linphone-desktop-5.0.15/linphone-app/cmake_builder/linphone_package/CMakeLists.txt.orig	2023-04-11 15:14:58.000000000 +0200
-+++ linphone-desktop-5.0.15/linphone-app/cmake_builder/linphone_package/CMakeLists.txt	2023-04-19 21:14:24.354397157 +0200
-@@ -241,7 +241,9 @@ else()# Not Windows and Apple
+--- linphone-desktop-5.2.2/linphone-app/cmake_builder/linphone_package/CMakeLists.txt.orig	2024-03-11 18:30:37.000000000 +0100
++++ linphone-desktop-5.2.2/linphone-app/cmake_builder/linphone_package/CMakeLists.txt	2024-03-12 19:55:18.290066556 +0100
+@@ -259,7 +259,9 @@ else()# Not Windows and Apple
  		execute_process(COMMAND install_name_tool -rpath "${LINPHONE_OUTPUT_DIR}/${CMAKE_INSTALL_LIBDIR}" "$ORIGIN/../lib" "${LIBRARY}")
  		execute_process(COMMAND install_name_tool -addrpath "$ORIGIN/../lib64" "${LIBRARY}")
  	endforeach ()
 +	if (EXISTS "${LINPHONE_OUTPUT_DIR}/${CMAKE_INSTALL_BINDIR}")
  	install(DIRECTORY "${LINPHONE_OUTPUT_DIR}/${CMAKE_INSTALL_BINDIR}/" DESTINATION "${CMAKE_INSTALL_BINDIR}" USE_SOURCE_PERMISSIONS)
 +	endif()
- #Just in case. This is useless because we have to use CMAKE_INSTALL_LIBDIR
- 	if( EXISTS "${LINPHONE_OUTPUT_DIR}/lib/")
- 		file(GLOB SHARED_LIBRARIES "${LINPHONE_OUTPUT_DIR}/lib/*.so*")
-@@ -267,6 +269,7 @@ else()# Not Windows and Apple
+ 	if(ENABLE_QT_KEYCHAIN)
+ 		install(DIRECTORY "${QTKEYCHAIN_OUTPUT_DIR}/${CMAKE_INSTALL_LIBDIR}/" DESTINATION "${CMAKE_INSTALL_LIBDIR}" USE_SOURCE_PERMISSIONS)
+ 	endif()
+@@ -288,6 +290,7 @@ else()# Not Windows and Apple
  		endif()
  		install(FILES ${SHARED_LIBRARIES} DESTINATION "lib64")
  	endif()
@@ -18,7 +18,7 @@
  	install(DIRECTORY "${LINPHONE_OUTPUT_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}" USE_SOURCE_PERMISSIONS
  			PATTERN "linphone" EXCLUDE
  			PATTERN "sounds" EXCLUDE
-@@ -284,8 +287,11 @@ else()# Not Windows and Apple
+@@ -305,8 +308,11 @@ else()# Not Windows and Apple
  	if(ENABLE_BUILD_VERBOSE)
  		message("INSTALLATION : ${LINPHONE_OUTPUT_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/" )
  	endif()
@@ -27,6 +27,6 @@
  	file(GLOB PLUGINS_FILES "${LINPHONE_OUTPUT_DIR}/${CMAKE_INSTALL_LIBDIR}/mediastreamer/plugins/*")
  	install(FILES ${PLUGINS_FILES} DESTINATION "plugins/mediastreamer/" )
 +	endif()
+ ]]
  # Install desktop/icon files.
  	configure_file("${CMAKE_CURRENT_SOURCE_DIR}/../../assets/linphone.desktop.cmake" "${CMAKE_CURRENT_BINARY_DIR}/../../${EXECUTABLE_NAME}.desktop" @ONLY)	
- 	install(FILES "${CMAKE_CURRENT_BINARY_DIR}/../../${EXECUTABLE_NAME}.desktop" DESTINATION "${CMAKE_INSTALL_DATADIR}/applications" PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
