@@ -1,14 +1,14 @@
 Summary:	Linphone Internet Phone
 Summary(pl.UTF-8):	Linphone - telefon internetowy
 Name:		linphone
-Version:	5.2.3
+Version:	5.2.6
 Release:	1
 # linphone itself is GPL, but ortp+mediastreamer+liblinphone 5.2 are AGPL
 License:	GPL v3+/AGPL v3+ or proprietary
 Group:		Applications/Communications
 #Source0Download: https://gitlab.linphone.org/BC/public/linphone-desktop/-/tags
 Source0:	https://gitlab.linphone.org/BC/public/linphone-desktop/-/archive/%{version}/linphone-desktop-%{version}.tar.bz2
-# Source0-md5:	7946546d75dbf72bc7b860bc4375283f
+# Source0-md5:	b02f7e3096bbe31cdbc1e64524a0e3f0
 Patch0:		%{name}-no-sdk.patch
 Patch1:		%{name}-cmake.patch
 Patch2:		%{name}-qtkeychain.patch
@@ -81,10 +81,10 @@ Pliki nagłówkowe dla wtyczek Linphone.
 
 %prep
 %setup -q -n linphone-desktop-%{version}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
+%patch -P 0 -p1
+%patch -P 1 -p1
+%patch -P 2 -p1
+%patch -P 3 -p1
 
 # hack versions (git describe doesn't work on dist tarballs)
 %{__sed} -i -e 's/bc_compute_full_version(PROJECT_VERSION_BUILD)/set(PROJECT_VERSION_BUILD %{version})/' linphone-app/build/CMakeLists.txt
